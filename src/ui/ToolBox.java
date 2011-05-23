@@ -1,13 +1,13 @@
 package ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-public class ToolBox extends JScrollPane {
+
+public class ToolBox extends JPanel {
 	public ToolBox(Window window) {
-		JTextField c = new JTextField(); c.setBackground(Color.BLUE);// FIXME
-		setViewportView(c);
+		setBackground(Color.BLUE);// FIXME
 	}
 }

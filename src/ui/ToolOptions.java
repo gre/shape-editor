@@ -1,13 +1,11 @@
 package ui;
 import java.awt.Color;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 
-public class ToolOptions extends JScrollPane {
+public class ToolOptions extends JPanel {
 	public ToolOptions(Window window) {
-		JTextField c = new JTextField(); c.setBackground(Color.GREEN);// FIXME
-		setViewportView(c);
+		setBackground(Color.GREEN);// FIXME
 	}
 }

@@ -1,15 +1,13 @@
 package ui;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Graphics;
 
 import javax.swing.JScrollPane;
 
 
-public class CanvasArea extends JScrollPane {
-	Canvas canvas;
+public class CanvasArea extends Canvas {
 	public CanvasArea(Window window) {
-		canvas = new Canvas();
-		setViewportView(canvas);
-		canvas.setBackground(Color.RED);
+		setBackground(Color.RED);
 	}
 }

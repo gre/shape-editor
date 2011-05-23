@@ -1,5 +1,10 @@
 package ui;
-import java.awt.*;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
 import javax.swing.*;
 
 public class Window extends JFrame {
@@ -20,7 +25,7 @@ public class Window extends JFrame {
 		CanvasArea canvas = new CanvasArea(this);
 		
 		setMenuBar(menu);
-		constraints.insets = new Insets(5, 5, 5, 5);
+		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
