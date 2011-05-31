@@ -32,10 +32,8 @@ public class Polygon extends FigureGraphic
 	}
 	
 	public void move(int dx, int dy) {
-		for (Point_2D point : points) {
-			point.x += dx;
-			point.y += dy;
-		}
+		for (Point_2D point : points)
+			point.move(dx,dy);
 	}
 	
 	public void updateXYAll() {

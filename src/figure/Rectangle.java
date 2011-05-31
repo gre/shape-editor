@@ -18,12 +18,13 @@ public class Rectangle extends FigureGraphic
 	}
 	
 	public Point_2D getCenter() {
-		return new Point_2D( Math.min(startPoint.y, endPoint.y) + (Math.abs(startPoint.y - endPoint.y) / 2 ),
-							 Math.min(startPoint.y, endPoint.y) + (Math.abs(startPoint.y - endPoint.y) / 2 ) );
+		return new Point_2D( xMin + (Math.abs(startPoint.x - endPoint.x) / 2 ),
+							 yMin + (Math.abs(startPoint.y - endPoint.y) / 2 ) );
 	}
 
 	public void move(int dx, int dy) {
-		//center.move(dx,dy);	
+		startPoint.move(dx,dy);
+		endPoint.move(dx,dy);
 	}
 
 	public void draw(Graphics g) {
@@ -34,14 +35,12 @@ public class Rectangle extends FigureGraphic
 		g.setColor(colorStroke);
 		// draw stroke of the cercle
 		g.drawRect(xMin, yMin, xMax-xMin, yMax-yMin);
-		g.drawString(name,getCenter().x,getCenter().y);
-	}
-	
-	public void calcXYMinMax() {
-		xMin = Math.min(startPoint.x, endPoint.x);
-		xMax = Math.max(startPoint.x, endPoint.x);
-		yMin = Math.min(startPoint.y, endPoint.y);
-		yMax = Math.max(startPoint.y, endPoint.y);
+		
+		 if(isSelected()) {
+			 // Display center
+			 drawCenter(g);
+			 drawName(g);
+		 }
 	}
 	
 	public boolean contain(Point_2D p) {
@@ -50,5 +49,12 @@ public class Rectangle extends FigureGraphic
 			return true;
 		}
 		return false;
+	}
+	
+	public void calcXYMinMax() {
+		xMin = Math.min(startPoint.x, endPoint.x);
+		xMax = Math.max(startPoint.x, endPoint.x);
+		yMin = Math.min(startPoint.y, endPoint.y);
+		yMax = Math.max(startPoint.y, endPoint.y);
 	}
 }	
