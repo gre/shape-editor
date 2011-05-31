@@ -10,9 +10,9 @@ public abstract class FigureGraphic implements Figure
 	 * A selected figure should display differently
 	 */
 	boolean selected = false;
-	
-	public FigureGraphic (String name, Color strokeColor, Color colorBackground)	{
-		this.colorStroke = strokeColor;	
+
+	public FigureGraphic (String name, Color colorStroke, Color colorBackground)	{
+		this.colorStroke = colorStroke;	
 		this.colorBackground = colorBackground;	
 		this.name = name;
 	}
@@ -36,6 +36,11 @@ public abstract class FigureGraphic implements Figure
 		Point_2D c = getCenter();
 		g.drawLine(c.x-1, c.y, c.x+1, c.y);
 		g.drawLine(c.x, c.y-1, c.x, c.y+1);
+	}
+	
+	protected void drawName(Graphics g) {
+		Point_2D c = getCenter();
+		g.drawString(name, c.x+2, c.y+12);
 	}
 	
 	public abstract void draw(Graphics g);

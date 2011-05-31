@@ -6,8 +6,6 @@ import java.awt.Graphics;
 
 public interface Figure
 {
-	public abstract double getSurface();
-
 	public abstract Point_2D getCenter();
 
 	public abstract void move(int dx, int dy);

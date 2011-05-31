@@ -11,8 +11,8 @@ public class Circle extends FigureGraphic
 	protected Point_2D center;
 	protected int radius;
 	
-	public Circle(String nom,Color cc,Color cr, int x, int y, int radius) {
-		super(nom,cc,cr);
+	public Circle(String name, Color colorStroke, Color colorBackground, int x, int y, int radius) {
+		super(name,colorStroke,colorBackground);
 		center = new Point_2D(x,y);
 		this.radius=radius;
 	}
@@ -41,7 +41,7 @@ public class Circle extends FigureGraphic
 		 if(isSelected()) {
 			 // Display center
 			 drawCenter(g);
-			 g.drawString(name, c.x+2, c.y+12);
+			 drawName(g);
 		 }
 	}
 

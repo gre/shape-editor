@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import figure.Circle;
-import figure.FigureGraphic;
+import figure.*;
 
 public class Env {
 
@@ -15,6 +14,18 @@ public class Env {
 		// TMP
 		figures.add(new Circle("cercle", Color.RED, Color.BLUE, 100, 100, 50));
 		figures.add(new Circle("hello", Color.blue, Color.LIGHT_GRAY, 200, 300, 100));
+		Polygon p;
+		p = new Polygon("polyg", Color.blue, Color.LIGHT_GRAY);
+		p.addPoint(0, 0);
+		p.addPoint(100, 100);
+		p.addPoint(100, 300);
+		
+		figures.add(p);
+		
+		p = new Triangle("triangle", Color.blue, Color.LIGHT_GRAY, 100, 100, 100, 200, 200, 300);
+
+		figures.add(p);
+
 	}
 	
 	public List<FigureGraphic> getFigures() {
