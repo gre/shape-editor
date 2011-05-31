@@ -44,14 +44,10 @@ public class Window extends JFrame {
 		constraints.gridy = 0;
 		constraints.weightx = 0;
 		constraints.weighty = 0;
-		constraints.ipadx = 200;
-		constraints.ipady = 100;
 		pane.add(toolbox, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-		constraints.ipadx = 0;
-		constraints.ipady = 0;
 		pane.add(tooloptions, constraints);
 
 		constraints.gridx = 1;
