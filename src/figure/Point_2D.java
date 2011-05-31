@@ -1,6 +1,6 @@
 package figure;
 
-class Point_2D
+public class Point_2D
 {
 	protected int x;
 	protected int y;

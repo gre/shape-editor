@@ -31,13 +31,18 @@ public class Circle extends FigureGraphic
 	}
 
 	public void draw(Graphics g) {
-		 g.setColor(colorBackground);
+		Point_2D c = getCenter(); 
+		g.setColor(colorBackground);
 		// fill the cercle	
-		 g.fillOval(getCenter().x-radius,getCenter().y-radius,radius*2,radius*2);
+		 g.fillOval(c.x-radius, c.y-radius, radius*2, radius*2);
 		 g.setColor(colorStroke);
 		// draw stroke of the cercle
-		 g.drawOval(getCenter().x-radius,getCenter().y-radius,radius*2,radius*2);
-		 g.drawString(name,getCenter().x,getCenter().y);
+		 g.drawOval(c.x-radius, c.y-radius, radius*2, radius*2);
+		 if(isSelected()) {
+			 // Display center
+			 drawCenter(g);
+			 g.drawString(name, c.x+2, c.y+12);
+		 }
 	}
 
 	public boolean contain(Point_2D p) {

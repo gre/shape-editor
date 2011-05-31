@@ -5,7 +5,7 @@ import javax.swing.*;
 
 
 public class ToolOptions extends JPanel {
-	public ToolOptions(Window window) {
+	public ToolOptions(Env env) {
 		setBackground(Color.GREEN);// FIXME
 	}
 }

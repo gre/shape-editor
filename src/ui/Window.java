@@ -1,14 +1,23 @@
 package ui;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 
+import figure.Circle;
+import figure.Figure;
+import figure.FigureGraphic;
+
 public class Window extends JFrame {
 	
+	Env env = new Env();
+
 	public Window() {
 		setBounds(100, 100, 800, 600);
 		setMinimumSize(new Dimension(400, 300));
@@ -19,10 +28,12 @@ public class Window extends JFrame {
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 
-		MenuBar menu = new MenuBar(this);
-		ToolBox toolbox = new ToolBox(this);
-		ToolOptions tooloptions = new ToolOptions(this);
-		CanvasArea canvas = new CanvasArea(this);
+		MenuBar menu = new MenuBar(env);
+		ToolBox toolbox = new ToolBox(env);
+		ToolOptions tooloptions = new ToolOptions(env);
+		CanvasArea canvas = new CanvasArea(env);
+		
+		canvas.addMouseListener(new CanvasMouseListener(canvas, env));
 		
 		setMenuBar(menu);
 		constraints.insets = new Insets(2, 2, 2, 2);

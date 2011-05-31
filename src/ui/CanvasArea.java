@@ -5,9 +5,20 @@ import java.awt.Graphics;
 
 import javax.swing.JScrollPane;
 
+import figure.Circle;
+import figure.FigureGraphic;
+
 
 public class CanvasArea extends Canvas {
-	public CanvasArea(Window window) {
-		setBackground(Color.RED);
+	Env env;
+	
+	public CanvasArea(Env env) {
+		this.env = env;
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		for(FigureGraphic f : env.getFigures())
+			f.draw(g);
 	}
 }

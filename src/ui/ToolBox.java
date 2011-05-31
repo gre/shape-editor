@@ -7,7 +7,7 @@ import javax.swing.*;
 
 
 public class ToolBox extends JPanel {
-	public ToolBox(Window window) {
+	public ToolBox(Env env) {
 		setBackground(Color.BLUE);// FIXME
 	}
 }
