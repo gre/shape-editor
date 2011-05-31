@@ -20,6 +20,7 @@ public class CanvasArea extends Canvas {
 	
 	@Override
 	public void paint(Graphics g) {
+		System.out.println("first figure center x : "+env.getFigures().get(0).getCenter().getX());
 		// Draw firstly unselected components
 		for(FigureGraphic f : env.getFigures())
 			if(!f.isSelected())

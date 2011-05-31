@@ -42,7 +42,7 @@ public class Env implements Serializable {
 	}
 
 	public void set(Env newEnv) {
-		figures = new ArrayList<FigureGraphic>(figures);
+		figures = new ArrayList<FigureGraphic>(newEnv.figures);
 		Window.getCurrent().triggerChange();
 	}
 }
