@@ -39,11 +39,7 @@ public class Circle extends FigureGraphic implements Serializable
 		 g.setColor(colorStroke);
 		// draw stroke of the cercle
 		 g.drawOval(c.x-radius, c.y-radius, radius*2, radius*2);
-		 if(isSelected()) {
-			 // Display center
-			 drawCenter(g);
-			 drawName(g);
-		 }
+		 afterDraw(g);
 	}
 
 	public boolean contain(Point_2D p) {

@@ -56,12 +56,7 @@ public class Polygon extends FigureGraphic implements Serializable
 		g.fillPolygon(xAll, yAll, points.size());
 		g.setColor(colorStroke);
 		g.drawPolygon(xAll, yAll, points.size());
-		
-		 if(isSelected()) {
-			 // Display center
-			 drawCenter(g);
-			 drawName(g);
-		 }
+		afterDraw(g);
 	}
 
 	public boolean contain(Point_2D p) {

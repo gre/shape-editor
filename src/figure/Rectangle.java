@@ -36,12 +36,7 @@ public class Rectangle extends FigureGraphic implements Serializable
 		g.setColor(colorStroke);
 		// draw stroke of the cercle
 		g.drawRect(xMin, yMin, xMax-xMin, yMax-yMin);
-		
-		 if(isSelected()) {
-			 // Display center
-			 drawCenter(g);
-			 drawName(g);
-		 }
+		afterDraw(g);
 	}
 	
 	public boolean contain(Point_2D p) {

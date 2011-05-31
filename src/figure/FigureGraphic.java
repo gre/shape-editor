@@ -45,6 +45,14 @@ public abstract class FigureGraphic implements Figure, Serializable
 	}
 	
 	public abstract void draw(Graphics g);
+	
+	public void afterDraw(Graphics g) {
+		if(isSelected()) {
+			// Display center
+			drawCenter(g);
+			drawName(g);
+		}
+	}
 
 	public void setSelected(boolean s) {
 		selected = s;
