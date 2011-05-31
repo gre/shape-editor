@@ -12,7 +12,6 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
 	Env env;
 	Canvas canvas;
-	
 	Point_2D lastPosition;
 	
 	public CanvasMouseListener(Canvas c, Env env) {
@@ -26,18 +25,11 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	}
 	
 	public FigureGraphic selectOneByPosition(Point_2D p) {
-		// Chercher en priorite les selectionnes
-		for(FigureGraphic f : env.getFigures()) {
-			if(f.isSelected() && f.contain(p)) {
-				unselectAll();
-				f.setSelected(true);
-				return f;
-			}
-		}
 		unselectAll();
 		for(FigureGraphic f : env.getFigures()) {
 			if(f.contain(p)) {
 				f.setSelected(true);
+				env.sortFigures();
 				return f;
 			}
 		}

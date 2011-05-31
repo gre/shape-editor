@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JScrollPane;
 
@@ -16,11 +19,16 @@ public class CanvasArea extends Canvas {
 	
 	public CanvasArea(Env env) {
 		this.env = env;
+		setBackground(Color.white);
 	}
 	
 	@Override
 	public void paint(Graphics g) {
-		System.out.println("first figure center x : "+env.getFigures().get(0).getCenter().getX());
+		List<FigureGraphic> figures = new ArrayList<FigureGraphic>(env.getFigures());
+		Collections.reverse(figures);
+		for(FigureGraphic f : figures)
+			f.draw(g);
+		/*
 		// Draw firstly unselected components
 		for(FigureGraphic f : env.getFigures())
 			if(!f.isSelected())
@@ -29,6 +37,7 @@ public class CanvasArea extends Canvas {
 		for(FigureGraphic f : env.getFigures())
 			if(f.isSelected())
 				f.draw(g);
+		*/
 	}
 	
 	/**

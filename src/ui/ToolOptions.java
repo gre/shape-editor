@@ -1,11 +1,14 @@
 package ui;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
 
 import javax.swing.*;
 
 
 public class ToolOptions extends JPanel {
 	public ToolOptions(Env env) {
-		setBackground(Color.GREEN);// FIXME
+		
 	}
 }

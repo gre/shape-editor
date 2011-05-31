@@ -10,6 +10,9 @@ import figure.*;
 
 public class Env implements Serializable {
 
+	/**
+	 * La lste des figures est trie dans l'ordre de priorite d'affichage
+	 */
 	private List<FigureGraphic> figures = new ArrayList<FigureGraphic>();
 	
 	public Env() {
@@ -17,20 +20,23 @@ public class Env implements Serializable {
 		figures.add(new Circle("cercle", Color.RED, Color.BLUE, 100, 100, 50));
 		figures.add(new Circle("hello", Color.blue, Color.LIGHT_GRAY, 200, 300, 100));
 		figures.add(new Rectangle("recta", Color.blue, Color.LIGHT_GRAY, 150, 150, 250,250));
-		Polygon p;
-		p = new Polygon("polyg", Color.blue, Color.LIGHT_GRAY);
+		Polygon p = new Polygon("polyg", Color.blue, Color.LIGHT_GRAY);
 		p.addPoint(0, 0);
 		p.addPoint(100, 100);
 		p.addPoint(100, 300);
-		
 		figures.add(p);
-		
-		p = new Triangle("triangle", Color.blue, Color.LIGHT_GRAY, 100, 100, 100, 200, 200, 300);
-
-		figures.add(p);
-		
-		
-
+		figures.add(new Triangle("triangle", Color.blue, Color.LIGHT_GRAY, 100, 100, 100, 200, 200, 300));
+	}
+	
+	public void sortFigures() {
+		List<FigureGraphic> newfigures = new ArrayList<FigureGraphic>();
+		for(FigureGraphic f : figures)
+			if(f.isSelected())
+				newfigures.add(f);
+		for(FigureGraphic f : figures)
+			if(!f.isSelected())
+				newfigures.add(f);
+		figures = newfigures;
 	}
 	
 	public List<FigureGraphic> getFigures() {
