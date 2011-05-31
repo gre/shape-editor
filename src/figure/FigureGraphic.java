@@ -33,7 +33,7 @@ public abstract class FigureGraphic implements Figure
 	}
 
 	protected void drawCenter(Graphics g) {
-		Point_2D c = getCenter(); 
+		Point_2D c = getCenter();
 		g.drawLine(c.x-1, c.y, c.x+1, c.y);
 		g.drawLine(c.x, c.y-1, c.x, c.y+1);
 	}

@@ -20,11 +20,39 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		this.env = env;
 	}
 	
+	public void unselectAll() {
+		for(FigureGraphic f : env.getFigures())
+			f.setSelected(false);
+	}
+	
+	public FigureGraphic selectOneByPosition(Point_2D p) {
+		// Chercher en priorite les selectionnes
+		for(FigureGraphic f : env.getFigures()) {
+			if(f.isSelected() && f.contain(p)) {
+				unselectAll();
+				f.setSelected(true);
+				return f;
+			}
+		}
+		unselectAll();
+		for(FigureGraphic f : env.getFigures()) {
+			if(f.contain(p)) {
+				f.setSelected(true);
+				return f;
+			}
+		}
+		return null;
+	}
+	
+	public void moveSelected(int dx, int dy) {
+		for(FigureGraphic f : env.getFigures())
+			if(f.isSelected())
+				f.move(dx, dy);
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		for(FigureGraphic f : env.getFigures()) {
-			f.setSelected(f.contain(new Point_2D(e.getX(), e.getY())));
-		}
+		selectOneByPosition(new Point_2D(e.getX(), e.getY()));
 		canvas.repaint();
 	}
 
@@ -45,41 +73,40 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	 * et retourne le deplacement associe au dernier enregistrement
 	 * @return
 	 */
-	/*
-	private Point_2D amassMove(e) {
-		Point_2D
-		if(lastMove==null) lastMove=new Point_2D(0, 0);
+	private Point_2D amassMove(int x, int y) {
+		Point_2D move = new Point_2D(0, 0);
+		if(lastPosition!=null) {
+			move.setX(x - lastPosition.getX());
+			move.setY(y - lastPosition.getY());
+		}
+		lastPosition = new Point_2D(x, y);
+		return move;
 	}
-	*/
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
+		amassMove(e.getX(), e.getY());
 		Point_2D p = new Point_2D(e.getX(), e.getY());
-		for(FigureGraphic f : env.getFigures()) {
-			f.setSelected(f.contain(p));
-		}
+		selectOneByPosition(p);
 		canvas.repaint();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		/*
-		Point_2D p = new Point_2D(e.getX(), e.getY());
-		int dx = e.getX() - lastMove.getX();
-		int dy = e.getY() - lastMove.getY();
-		lastMove = null;
+		Point_2D move = amassMove(e.getX(), e.getY());
+		moveSelected(move.getX(), move.getY());
 		canvas.repaint();
-		*/
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+		Point_2D move = amassMove(e.getX(), e.getY());
+		moveSelected(move.getX(), move.getY());
+		canvas.repaint();
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
 	}
 
 }
