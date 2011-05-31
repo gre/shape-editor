@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class Polygon extends FigureGraphic implements Serializable
 {
 	protected List<Point_2D> points;

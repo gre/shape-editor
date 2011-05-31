@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Rectangle extends FigureGraphic implements Serializable
 {
 	protected Point_2D startPoint, endPoint;
@@ -31,10 +32,8 @@ public class Rectangle extends FigureGraphic implements Serializable
 	public void draw(Graphics g) {
 		calcXYMinMax();
 		g.setColor(colorBackground);
-		// fill the cercle	
 		g.fillRect(xMin, yMin, xMax-xMin, yMax-yMin);
 		g.setColor(colorStroke);
-		// draw stroke of the cercle
 		g.drawRect(xMin, yMin, xMax-xMin, yMax-yMin);
 		afterDraw(g);
 	}

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Circle extends FigureGraphic implements Serializable
 {
 	protected Point_2D center;
@@ -34,12 +35,10 @@ public class Circle extends FigureGraphic implements Serializable
 	public void draw(Graphics g) {
 		Point_2D c = getCenter(); 
 		g.setColor(colorBackground);
-		// fill the cercle	
-		 g.fillOval(c.x-radius, c.y-radius, radius*2, radius*2);
-		 g.setColor(colorStroke);
-		// draw stroke of the cercle
-		 g.drawOval(c.x-radius, c.y-radius, radius*2, radius*2);
-		 afterDraw(g);
+		g.fillOval(c.x-radius, c.y-radius, radius*2, radius*2);
+		g.setColor(colorStroke);
+		g.drawOval(c.x-radius, c.y-radius, radius*2, radius*2);
+		afterDraw(g);
 	}
 
 	public boolean contain(Point_2D p) {

@@ -2,6 +2,7 @@ package figure;
 import java.awt.*;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public abstract class FigureGraphic implements Figure, Serializable
 {
 	Color colorStroke, colorBackground;

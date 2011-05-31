@@ -1,10 +1,9 @@
 package figure;
 
-import figure.Point_2D;
-
 import java.awt.Color;
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Triangle extends Polygon implements Serializable
 {
 	public Triangle(String name, Color colorStroke, Color colorBackground, int x1, int y1, int x2, int y2, int x3, int y3) {

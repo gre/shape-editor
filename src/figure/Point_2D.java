@@ -2,6 +2,7 @@ package figure;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Point_2D implements Serializable
 {
 	protected int x;
