@@ -5,10 +5,11 @@ import figure.Point_2D;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Polygon extends FigureGraphic
+public class Polygon extends FigureGraphic implements Serializable
 {
 	protected List<Point_2D> points;
 	protected int[] xAll, yAll;

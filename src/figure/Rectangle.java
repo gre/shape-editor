@@ -5,8 +5,9 @@ import figure.Point_2D;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
-public class Rectangle extends FigureGraphic
+public class Rectangle extends FigureGraphic implements Serializable
 {
 	protected Point_2D startPoint, endPoint;
 	private int xMin, yMin, xMax, yMax;

@@ -1,6 +1,8 @@
 package figure;
 
-public class Point_2D
+import java.io.Serializable;
+
+public class Point_2D implements Serializable
 {
 	protected int x;
 	protected int y;

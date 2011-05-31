@@ -1,12 +1,14 @@
 package ui;
 
 import java.awt.Color;
+import java.beans.EventHandler;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import figure.*;
 
-public class Env {
+public class Env implements Serializable {
 
 	private List<FigureGraphic> figures = new ArrayList<FigureGraphic>();
 	
@@ -37,5 +39,10 @@ public class Env {
 
 	public void setFigures(List<FigureGraphic> figures) {
 		this.figures = figures;
+	}
+
+	public void set(Env newEnv) {
+		figures = new ArrayList<FigureGraphic>(figures);
+		Window.getCurrent().triggerChange();
 	}
 }

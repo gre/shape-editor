@@ -16,9 +16,20 @@ import figure.FigureGraphic;
 
 public class Window extends JFrame {
 	
-	Env env = new Env();
-
+	private Env env = new Env();
+	
+	private CanvasArea canvas;
+	private MenuBar menu;
+	public ToolBox toolbox;
+	public ToolOptions tooloptions;
+	
+	private static Window current;
+	public static Window getCurrent() {
+		return current;
+	}
+	
 	public Window() {
+		current = this;
 		setBounds(100, 100, 800, 600);
 		setMinimumSize(new Dimension(400, 300));
 		setTitle("Shape Editor");
@@ -28,16 +39,16 @@ public class Window extends JFrame {
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 
-		MenuBar menu = new MenuBar(env);
-		ToolBox toolbox = new ToolBox(env);
-		ToolOptions tooloptions = new ToolOptions(env);
-		CanvasArea canvas = new CanvasArea(env);
+		menu = new MenuBar(this, env);
+		toolbox = new ToolBox(env);
+		tooloptions = new ToolOptions(env);
+		canvas = new CanvasArea(env);
 		
 		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
 		canvas.addMouseListener(cml);
 		canvas.addMouseMotionListener(cml);
 		
-		setMenuBar(menu);
+		setJMenuBar(menu);
 		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.gridx = 0;
@@ -62,5 +73,9 @@ public class Window extends JFrame {
 	
 	public static void main(String[] args) {
 		new Window();
+	}
+
+	public void triggerChange() {
+		canvas.repaint();
 	}
 }

@@ -5,8 +5,9 @@ import figure.Point_2D;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
-public class Circle extends FigureGraphic
+public class Circle extends FigureGraphic implements Serializable
 {
 	protected Point_2D center;
 	protected int radius;

@@ -1,7 +1,8 @@
 package figure;
 import java.awt.*;
+import java.io.Serializable;
 
-public abstract class FigureGraphic implements Figure
+public abstract class FigureGraphic implements Figure, Serializable
 {
 	Color colorStroke, colorBackground;
 	String name;
