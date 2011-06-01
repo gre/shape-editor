@@ -96,7 +96,10 @@ public class MenuBar extends JMenuBar {
 			fc.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if(e.getActionCommand().equals("ApproveSelection")) {
-						menu.save(fc.getSelectedFile());
+						File selected = fc.getSelectedFile();
+						if(!selected.getName().endsWith(".sef"))
+							selected = new File(selected.getAbsolutePath()+".sef");
+						menu.save(selected);
 					}
 				}
 			});
