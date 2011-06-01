@@ -19,7 +19,9 @@ public class Env implements Serializable {
 		// TMP
 		figures.add(new Circle("cercle", Color.RED, Color.BLUE, 100, 100, 50));
 		figures.add(new Circle("hello", Color.blue, Color.LIGHT_GRAY, 200, 300, 100));
-		figures.add(new Rectangle("recta", Color.blue, Color.LIGHT_GRAY, 150, 150, 250,250));
+
+		figures.add(new Rectangle("recta", Color.blue, Color.LIGHT_GRAY, 150, 150, 150,100));
+
 		Polygon p = new Polygon("polyg", Color.blue, Color.LIGHT_GRAY);
 		p.addPoint(0, 0);
 		p.addPoint(100, 100);
