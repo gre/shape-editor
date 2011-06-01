@@ -38,7 +38,7 @@ public class Polygon extends FigureGraphic implements Serializable
 			point.move(dx,dy);
 	}
 	
-	public void updateXYAll() {
+	protected void updateXYAll() {
 		xAll = new int[points.size()];
 		yAll = new int[points.size()];
 		

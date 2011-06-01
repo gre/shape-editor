@@ -28,16 +28,6 @@ public class CanvasArea extends Canvas {
 		Collections.reverse(figures);
 		for(FigureGraphic f : figures)
 			f.draw(g);
-		/*
-		// Draw firstly unselected components
-		for(FigureGraphic f : env.getFigures())
-			if(!f.isSelected())
-				f.draw(g);
-		// Draw in foreground selected figures
-		for(FigureGraphic f : env.getFigures())
-			if(f.isSelected())
-				f.draw(g);
-		*/
 	}
 	
 	/**

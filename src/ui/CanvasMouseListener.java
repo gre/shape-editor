@@ -36,6 +36,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		return null;
 	}
 	
+	public int countSelected() {
+		int nb = 0;
+		for(FigureGraphic f : env.getFigures())
+			if(f.isSelected())
+				nb ++;
+		return nb;
+	}
+	
 	public void moveSelected(int dx, int dy) {
 		for(FigureGraphic f : env.getFigures())
 			if(f.isSelected())
@@ -77,6 +85,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
+		int nbSelected = countSelected();
 		amassMove(e.getX(), e.getY());
 		Point_2D p = new Point_2D(e.getX(), e.getY());
 		selectOneByPosition(p);

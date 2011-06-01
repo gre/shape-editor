@@ -10,34 +10,37 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Rectangle extends FigureGraphic implements Serializable
 {
-	protected Point_2D startPoint;
+	protected Point_2D topleft;
 	protected int width,height;
 	
-	public Rectangle(String name, Color colorStroke, Color colorBackground, int x1, int y1, int width, int height) {
+	public Rectangle(String name, Color colorStroke, Color colorBackground, int x, int y, int width, int height) {
 		super(name,colorStroke,colorBackground);
-		this.startPoint = new Point_2D(x1,y1);
+		this.topleft = new Point_2D(x, y);
 		this.width = width;
 		this.height = height;
 	}
 	
 	public Point_2D getCenter() {
-		return new Point_2D (startPoint.getX()+(width)/2,startPoint.getY()+(height)/2);
+		return new Point_2D (topleft.getX()+(width)/2,topleft.getY()+(height)/2);
 	}
 
 	public void move(int dx, int dy) {
-		startPoint.move(dx,dy);
+		topleft.move(dx,dy);
 	}
 
 	public void draw(Graphics g) {
 		g.setColor(colorBackground);
-		g.fillRect(startPoint.x,startPoint.y,width,height); 
+		g.fillRect(topleft.getX(), topleft.getY(), width, height);
 		g.setColor(colorStroke);
-		g.drawRect(startPoint.x,startPoint.y,width,height) ;
+		g.drawRect(topleft.getX(), topleft.getY(), width, height);
 		afterDraw(g);
 	}
 	
 	public boolean contain(Point_2D p) {
-		return ((startPoint.getX()< p.getX())&& ( p.getX()< startPoint.getX()+ width)&&
-				(startPoint.getY()< p.getY())&& ( p.getY()< startPoint.getY()+ height));
+		if ( topleft.getX() <= p.getX() && p.getX() <= topleft.getX()+width
+		  && topleft.getY() <= p.getY() && p.getY() <= topleft.getY()+height) {
+			return true;
+		}
+		return false;
 	}
 }	
