@@ -13,7 +13,7 @@ public abstract class FigureGraphic implements Figure, Serializable
 	 */
 	boolean selected = false;
 	
-	boolean opaque = false;
+	boolean transparent = false;
 
 	public FigureGraphic (String name, Color colorStroke, Color colorBackground)	{
 		this.colorStroke = colorStroke;	
@@ -58,18 +58,18 @@ public abstract class FigureGraphic implements Figure, Serializable
 
 	public Color getStrokeForCurrentState() {
 		Color c = colorStroke;
-		return opaque ? new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()/2) : c;
+		return transparent ? new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()/2) : c;
 	}
 	public Color getBgForCurrentState() {
 		Color c = colorBackground;
-		return opaque ? new Color(c.getRed(), c.getGreen(), c.getBlue(),  c.getAlpha()/2) : c;
+		return transparent ? new Color(c.getRed(), c.getGreen(), c.getBlue(),  c.getAlpha()/2) : c;
 	}
 
 	public void setSelected(boolean s) {
 		selected = s;
 	}
-	public void setOpaque(boolean o) {
-		opaque = o;
+	public void setTransparent(boolean o) {
+		transparent = o;
 	}
 	public boolean isSelected() {
 		return selected;

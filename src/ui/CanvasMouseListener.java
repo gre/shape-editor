@@ -37,7 +37,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	}
 	public void setSelected(FigureGraphic figure, boolean value) {
 		figure.setSelected(value);
-		figure.setOpaque(value && mouseIsDown);
+		figure.setTransparent(value && mouseIsDown);
 	}
 	
 	public void selectFigure(FigureGraphic figure) {
@@ -121,7 +121,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			}
 			for(FigureGraphic f : env.getFigures())
 				if(f.isSelected())
-					f.setOpaque(true);
+					f.setTransparent(true);
 			break;
 		}
 		canvas.repaint();
@@ -154,13 +154,13 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			if(countSelected()>0)
 				env.getToolbox().move.doClick();
 			for(FigureGraphic f : env.getFigures())
-				f.setOpaque(false);
+				f.setTransparent(false);
 			break;
 		case MOVE:
 			Point_2D move = amassMove(e.getX(), e.getY());
 			moveSelected(move.getX(), move.getY());
 			for(FigureGraphic f : env.getFigures())
-				f.setOpaque(false);
+				f.setTransparent(false);
 			break;
 		}
 		canvas.repaint();
