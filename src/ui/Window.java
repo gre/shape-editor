@@ -24,7 +24,10 @@ public class Window extends JFrame {
 	
 	private Env env = new Env(canvas);
 	
+	public static Window CURRENT_FOR_DEBUG;
+	
 	public Window() {
+		CURRENT_FOR_DEBUG = this;
 		setBounds(100, 100, 800, 600);
 		setMinimumSize(new Dimension(400, 300));
 		setTitle("Shape Editor");
@@ -35,7 +38,7 @@ public class Window extends JFrame {
 		GridBagConstraints constraints = new GridBagConstraints();
 
 		menu = new MenuBar(this, env);
-		toolbox = new ToolBox(env);
+		toolbox = new ToolBox(this, env);
 		tooloptions = new ToolOptions(env);
 		canvas = new CanvasArea(env);
 		

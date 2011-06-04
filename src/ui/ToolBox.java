@@ -1,15 +1,13 @@
 package ui;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +25,19 @@ public class ToolBox extends JPanel {
 	public JButton newRectangle = new JButton(new ImageIcon("rectangle.png"));
 	public JButton newPolygon = new JButton(new ImageIcon("polygon.png"));
 	List<JButton> buttons = new ArrayList<JButton>();
+
+	public Canvas bgColor = new Canvas();
+	public Canvas strokeColor = new Canvas();
+	public JLabel bgLabel = new JLabel("fond");
+	public JLabel strokeLabel = new JLabel("contour");
 	
 	Env env;
+	Window window;
 	
-	public void addImageButton(JButton b) {
+	public JButton addImageButton(JButton b) {
 		b.setPreferredSize(new Dimension(36, 36));
 		buttons.add(b);
-		add(b);
+		return b;
 	}
 	public void select(JButton button) {
 		for(JButton b : buttons)
@@ -41,19 +45,67 @@ public class ToolBox extends JPanel {
 		button.setSelected(true);
 	}
 	
-	public ToolBox(Env env) {
+	public ToolBox(Window window, Env env) {
 		this.env = env;
+		this.window = window;
 		setBorder(BorderFactory.createEtchedBorder());
 		setPreferredSize(new Dimension(200, 150));
-		FlowLayout gl = new FlowLayout();
-		gl.setAlignment(FlowLayout.LEFT);
-		setLayout(gl);
-		addImageButton(select);
-		addImageButton(move);
-		addImageButton(newCircle);
-		addImageButton(newTriangle);
-		addImageButton(newRectangle);
-		addImageButton(newPolygon);
+		setMaximumSize(new Dimension(200, 150));
+		FlowLayout l = new FlowLayout();
+		l.setAlignment(FlowLayout.LEFT);
+		setLayout(l);
+		JPanel panel = new JPanel();
+		panel.add(addImageButton(select));
+		panel.add(addImageButton(move));
+		add(panel);
+		panel = new JPanel();
+		panel.add(addImageButton(newCircle));
+		panel.add(addImageButton(newTriangle));
+		panel.add(addImageButton(newRectangle));
+		panel.add(addImageButton(newPolygon));
+		add(panel);
+		panel = new JPanel();
+		panel.add(strokeColor);
+		panel.add(strokeLabel);
+		panel.add(bgColor);
+		panel.add(bgLabel);
+		add(panel);
+
+		bgColor.setSize(20, 20);
+		strokeColor.setSize(20, 20);
+		bgColor.setBackground(env.getBackgroundColor());
+		strokeColor.setBackground(env.getStrokeColor());
+
+		final Window w = window;
+		final Env e = env;
+		MouseListener clickBg = new MouseListener() {
+			public void mouseReleased(MouseEvent arg0) {}
+			public void mousePressed(MouseEvent arg0) {}
+			public void mouseExited(MouseEvent arg0) {}
+			public void mouseEntered(MouseEvent arg0) {}
+			public void mouseClicked(MouseEvent arg0) {
+				Color c = JColorChooser.showDialog(w, "Couleur de fond", e.getBackgroundColor());
+				e.setBackgroundColor(c);
+				bgColor.setBackground(c);
+			}
+		};
+		bgLabel.addMouseListener(clickBg);
+		bgColor.addMouseListener(clickBg);
+		
+		MouseListener clickStroke = new MouseListener() {
+			public void mouseReleased(MouseEvent arg0) {}
+			public void mousePressed(MouseEvent arg0) {}
+			public void mouseExited(MouseEvent arg0) {}
+			public void mouseEntered(MouseEvent arg0) {}
+			public void mouseClicked(MouseEvent arg0) {
+				Color c = JColorChooser.showDialog(w, "Couleur de contour", e.getStrokeColor());
+				e.setStrokeColor(c);
+				strokeColor.setBackground(c);
+			}
+		};
+		strokeLabel.addMouseListener(clickStroke);
+		strokeColor.addMouseListener(clickStroke);
+		
 		select.addActionListener(new SelectListener());
 		move.addActionListener(new MoveListener());
 		newCircle.addActionListener(new NewCircleListener());
