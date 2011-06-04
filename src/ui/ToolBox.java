@@ -85,6 +85,7 @@ public class ToolBox extends JPanel {
 			public void mouseEntered(MouseEvent arg0) {}
 			public void mouseClicked(MouseEvent arg0) {
 				Color c = JColorChooser.showDialog(w, "Couleur de fond", e.getBackgroundColor());
+				if(c==null) return;
 				e.setBackgroundColor(c);
 				bgColor.setBackground(c);
 			}
@@ -99,6 +100,7 @@ public class ToolBox extends JPanel {
 			public void mouseEntered(MouseEvent arg0) {}
 			public void mouseClicked(MouseEvent arg0) {
 				Color c = JColorChooser.showDialog(w, "Couleur de contour", e.getStrokeColor());
+				if(c==null) return;
 				e.setStrokeColor(c);
 				strokeColor.setBackground(c);
 			}
