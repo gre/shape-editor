@@ -34,9 +34,9 @@ public class Circle extends FigureGraphic implements Serializable
 
 	public void draw(Graphics g) {
 		Point_2D c = getCenter(); 
-		g.setColor(colorBackground);
+		g.setColor(getBgForCurrentState());
 		g.fillOval(c.x-radius, c.y-radius, radius*2, radius*2);
-		g.setColor(colorStroke);
+		g.setColor(getStrokeForCurrentState());
 		g.drawOval(c.x-radius, c.y-radius, radius*2, radius*2);
 		afterDraw(g);
 	}

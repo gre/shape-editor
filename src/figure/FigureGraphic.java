@@ -1,5 +1,6 @@
 package figure;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
@@ -46,15 +47,25 @@ public abstract class FigureGraphic implements Figure, Serializable
 	}
 	
 	public abstract void draw(Graphics g);
-	
+
 	public void afterDraw(Graphics g) {
 		if(isSelected()) {
-			// Display center
 			drawCenter(g);
 			drawName(g);
 		}
 	}
 
+	public Color getStrokeForCurrentState() {
+		Color c = colorStroke;
+		if(selected) return new Color(c.getRed(), c.getGreen(), c.getBlue(), 200);
+		return c;
+	}
+	public Color getBgForCurrentState() {
+		Color c = colorBackground;
+		if(selected) return new Color(c.getRed(), c.getGreen(), c.getBlue(), 200);
+		return c;
+	}
+	
 	public void setSelected(boolean s) {
 		selected = s;
 	}

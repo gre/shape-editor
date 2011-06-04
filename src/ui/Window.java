@@ -16,20 +16,14 @@ import figure.FigureGraphic;
 
 public class Window extends JFrame {
 	
-	private Env env = new Env();
-	
 	private CanvasArea canvas;
 	private MenuBar menu;
 	public ToolBox toolbox;
 	public ToolOptions tooloptions;
 	
-	private static Window current;
-	public static Window getCurrent() {
-		return current;
-	}
+	private Env env = new Env(canvas);
 	
 	public Window() {
-		current = this;
 		setBounds(100, 100, 800, 600);
 		setMinimumSize(new Dimension(400, 300));
 		setTitle("Shape Editor");
@@ -43,6 +37,9 @@ public class Window extends JFrame {
 		toolbox = new ToolBox(env);
 		tooloptions = new ToolOptions(env);
 		canvas = new CanvasArea(env);
+		
+		env.setToolbox(toolbox);
+		env.setCanvas(canvas);
 		
 		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
 		canvas.addMouseListener(cml);
@@ -73,9 +70,5 @@ public class Window extends JFrame {
 	
 	public static void main(String[] args) {
 		new Window();
-	}
-
-	public void triggerChange() {
-		canvas.repaint();
 	}
 }

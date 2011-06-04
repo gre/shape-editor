@@ -52,10 +52,9 @@ public class Polygon extends FigureGraphic implements Serializable
 	
 	public void draw(Graphics g) {
 		updateXYAll();
-		
-		g.setColor(colorBackground);
+		g.setColor(getBgForCurrentState());
 		g.fillPolygon(xAll, yAll, points.size());
-		g.setColor(colorStroke);
+		g.setColor(getStrokeForCurrentState());
 		g.drawPolygon(xAll, yAll, points.size());
 		afterDraw(g);
 	}

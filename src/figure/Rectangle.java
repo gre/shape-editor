@@ -29,9 +29,9 @@ public class Rectangle extends FigureGraphic implements Serializable
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(colorBackground);
+		g.setColor(getBgForCurrentState());
 		g.fillRect(topleft.getX(), topleft.getY(), width, height);
-		g.setColor(colorStroke);
+		g.setColor(getStrokeForCurrentState());
 		g.drawRect(topleft.getX(), topleft.getY(), width, height);
 		afterDraw(g);
 	}

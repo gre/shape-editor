@@ -14,18 +14,12 @@ import javax.swing.filechooser.FileFilter;
 public class MenuBar extends JMenuBar {
 
 	public File openedFile = null;
-	public Window parent;
+	public JFrame parent;
 	public Env env;
 	
 	public void open(File f) {
 		openedFile = f;
-		try {
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
-			env.set((Env) ois.readObject());
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("TODO - handle exception: "+e);
-		}
+		env.openFromFile(f);
 	}
 	
 	public void save(File f) {
@@ -34,14 +28,7 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	public void save() {
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(openedFile));
-			oos.writeObject(env);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			System.err.println("TODO - handle exception: "+e);
-		}
+		env.saveToFile(openedFile);
 	}
 	
 	class ShapeEditorFileFilter extends FileFilter {
@@ -71,7 +58,7 @@ public class MenuBar extends JMenuBar {
 					}
 				}
 			});
-			fc.showOpenDialog(Window.getCurrent());
+			fc.showOpenDialog(menu.parent);
 		}
 	}
 	
@@ -103,12 +90,12 @@ public class MenuBar extends JMenuBar {
 					}
 				}
 			});
-			fc.showOpenDialog(menu.parent);
+			fc.showSaveDialog(menu.parent);
 		}
 	}
 	
-	public MenuBar(Window window, Env env) {
-		this.parent = window;
+	public MenuBar(JFrame parent, Env env) {
+		this.parent = parent;
 		this.env = env;
 		JMenu file = new JMenu("Fichier");
 		JMenuItem open = new JMenuItem("Ouvrir");
