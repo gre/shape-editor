@@ -16,6 +16,7 @@ import javax.swing.*;
 import ui.CanvasArea.Mode;
 
 // TODO : une classe ToolBoxButton
+@SuppressWarnings("serial")
 public class ToolBox extends JPanel {
 	
 	public JButton select = new JButton(new ImageIcon("select.png"));

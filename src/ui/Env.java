@@ -1,7 +1,6 @@
 package ui;
 
 import java.awt.Color;
-import java.beans.EventHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,6 +38,7 @@ public class Env {
 	/**
 	 * Exportable data
 	 */
+	@SuppressWarnings("serial")
 	protected static class Data implements Serializable {
 		/**
 		 * La liste des figures est trie dans l'ordre de priorite d'affichage

@@ -3,15 +3,12 @@ package ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
 // TODO : Fichier -> Nouveau
+@SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 
 	public File openedFile = null;

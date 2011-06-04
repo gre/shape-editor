@@ -1,6 +1,5 @@
 package ui;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -137,7 +136,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			emptyBuildingFigureIfNotInstanceOf(Circle.class);
 			Circle circle = (Circle)buildingFigure;
 			if(buildingFigure!=null) {
-				((Circle)buildingFigure).fitRadiusWithPoint(e.getX(), e.getY());
+				circle.fitRadiusWithPoint(e.getX(), e.getY());
 				buildingFigure = null;
 			}
 			else {

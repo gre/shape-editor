@@ -1,20 +1,9 @@
 package ui;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.awt.*;
 import javax.swing.*;
 
-import figure.Circle;
-import figure.Figure;
-import figure.FigureGraphic;
-
 // TODO : StatusBar
+@SuppressWarnings("serial")
 public class Window extends JFrame {
 	
 	private CanvasArea canvas;
@@ -24,10 +13,7 @@ public class Window extends JFrame {
 	
 	private Env env = new Env(canvas);
 	
-	public static Window CURRENT_FOR_DEBUG;
-	
 	public Window() {
-		CURRENT_FOR_DEBUG = this;
 		setBounds(100, 100, 800, 600);
 		setMinimumSize(new Dimension(400, 300));
 		setTitle("Shape Editor");

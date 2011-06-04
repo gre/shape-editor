@@ -10,12 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JScrollPane;
-
-import figure.Circle;
 import figure.FigureGraphic;
 
-
+@SuppressWarnings("serial")
 public class CanvasArea extends Canvas {
 	Env env;
 	Mode mode = Mode.MOVE;
@@ -59,6 +56,7 @@ public class CanvasArea extends Canvas {
 	public void update(Graphics g) {
 		Graphics offgc;
 		Image offscreen = null;
+		@SuppressWarnings("deprecation")
 		Dimension d = size();
 		// create the offscreen buffer and associated Graphics
 		offscreen = createImage(d.width, d.height);
