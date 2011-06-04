@@ -7,13 +7,37 @@ import java.io.File;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
-// TODO : Fichier -> Nouveau
+// TODO : Popup de validation des actions (Fermer le dessin actuel sans sauvegarder ?)
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 
 	public File openedFile = null;
 	public JFrame parent;
 	public Env env;
+	
+	public MenuBar(JFrame parent, final Env env) {
+		this.parent = parent;
+		this.env = env;
+		JMenu file = new JMenu("Fichier");
+		JMenuItem nouveau = new JMenuItem("Nouveau");
+		JMenuItem open = new JMenuItem("Ouvrir");
+		JMenuItem save = new JMenuItem("Sauvegarder");
+		JMenuItem saveAs = new JMenuItem("Sauvegarder sous");
+		nouveau.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				env.empty();
+				env.canvas.repaint();
+			}
+		});
+		open.addActionListener(new OpenFileListener(this));
+		save.addActionListener(new SaveFileListener(this, false));
+		saveAs.addActionListener(new SaveFileListener(this, true));
+		file.add(nouveau);
+		file.add(open);
+		file.add(save);
+		file.add(saveAs);
+		add(file);
+	}
 	
 	public void open(File f) {
 		openedFile = f;
@@ -90,21 +114,5 @@ public class MenuBar extends JMenuBar {
 			});
 			fc.showSaveDialog(menu.parent);
 		}
-	}
-	
-	public MenuBar(JFrame parent, Env env) {
-		this.parent = parent;
-		this.env = env;
-		JMenu file = new JMenu("Fichier");
-		JMenuItem open = new JMenuItem("Ouvrir");
-		JMenuItem save = new JMenuItem("Sauvegarder");
-		JMenuItem saveAs = new JMenuItem("Sauvegarder sous");
-		open.addActionListener(new OpenFileListener(this));
-		save.addActionListener(new SaveFileListener(this, false));
-		saveAs.addActionListener(new SaveFileListener(this, true));
-		file.add(open);
-		file.add(save);
-		file.add(saveAs);
-		add(file);
 	}
 }

@@ -19,7 +19,7 @@ public class Env {
 	protected CanvasArea canvas;
 	protected ToolBox toolbox;
 
-	protected Color bg = Color.WHITE;
+	protected Color bg = new Color(150, 150, 250);
 	protected Color stroke = Color.BLACK;
 
 	public Color getBackgroundColor() {
@@ -129,5 +129,8 @@ public class Env {
 	}
 	public void addFigure(FigureGraphic buildingFigure) {
 		getFigures().add(0, buildingFigure);
+	}
+	public void empty() {
+		data = new Data();
 	}
 }

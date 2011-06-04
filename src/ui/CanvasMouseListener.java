@@ -7,9 +7,7 @@ import java.awt.event.MouseMotionListener;
 
 import ui.CanvasArea.Mode;
 
-import figure.Circle;
-import figure.FigureGraphic;
-import figure.Point_2D;
+import figure.*;
 
 public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
@@ -143,6 +141,19 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				buildingFigure = Circle.createByClick(env, e.getX(), e.getY());
 				env.addFigure(buildingFigure);
 			}
+			break;
+		case DRAW_RECTANGLE:
+			emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+			Rectangle rectangle = (Rectangle) buildingFigure;
+			if(buildingFigure!=null) {
+				rectangle.setSecondPoint(e.getX(), e.getY());
+				buildingFigure = null;
+			}
+			else {
+				buildingFigure = Rectangle.createByClick(env, e.getX(), e.getY());
+				env.addFigure(buildingFigure);
+			}
+			break;
 		}
 		canvas.repaint();
 	}
@@ -172,6 +183,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				buildingFigure = null;
 			}
 			break;
+		case DRAW_RECTANGLE:
+			emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+			Rectangle rectangle = (Rectangle) buildingFigure;
+			if(rectangle!=null && rectangle.getWidth()>0 && rectangle.getHeight()>0) {
+				rectangle.setSecondPoint(e.getX(), e.getY());
+				buildingFigure = null;
+			}
+			break;
 		}
 		canvas.repaint();
 	}
@@ -196,6 +215,12 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			if(buildingFigure!=null) circle.fitRadiusWithPoint(e.getX(), e.getY());
 			else mustRepaint = false;
 			break;
+		case DRAW_RECTANGLE:
+			emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+			Rectangle rectangle = (Rectangle) buildingFigure;
+			if(buildingFigure!=null) rectangle.setSecondPoint(e.getX(), e.getY());
+			else mustRepaint = false;
+			break;
 		default: 
 			mustRepaint = false;
 		}
@@ -209,10 +234,13 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			switch (mode) {
 			case DRAW_CIRCLE:
 				emptyBuildingFigureIfNotInstanceOf(Circle.class);
-				if(buildingFigure!=null) 
-					((Circle) buildingFigure).fitRadiusWithPoint(e.getX(), e.getY());
-				else
-					mustRepaint = false;
+				if(buildingFigure!=null) ((Circle) buildingFigure).fitRadiusWithPoint(e.getX(), e.getY());
+				else mustRepaint = false;
+				break;
+			case DRAW_RECTANGLE:
+				emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+				if(buildingFigure!=null) ((Rectangle) buildingFigure).setSecondPoint(e.getX(), e.getY());
+				else mustRepaint = false;
 				break;
 			default:
 				mustRepaint = false;
