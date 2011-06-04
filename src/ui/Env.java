@@ -19,6 +19,22 @@ public class Env {
 	
 	protected CanvasArea canvas;
 	protected ToolBox toolbox;
+
+	protected Color bg = Color.WHITE;
+	protected Color stroke = Color.BLACK;
+
+	public Color getBackgroundColor() {
+		return bg;
+	}
+	public Color getStrokeColor() {
+		return stroke;
+	}
+	public void setBackgroundColor(Color c) {
+		bg = c;
+	}
+	public void setStrokeColor(Color c) {
+		stroke = c;
+	}
 	
 	/**
 	 * Exportable data
@@ -59,6 +75,13 @@ public class Env {
 	
 	public List<FigureGraphic> getFigures() {
 		return data.figures;
+	}
+	
+	public FigureGraphic getFirstFigureByName(String name) {
+		for(FigureGraphic f : getFigures())
+			if(name.equals(f.getName()))
+				return f;
+		return null;
 	}
 
 	public void setFigures(List<FigureGraphic> figures) {
@@ -103,5 +126,8 @@ public class Env {
 			e.printStackTrace();
 			System.err.println("TODO - handle exception: "+e);
 		}
+	}
+	public void addFigure(FigureGraphic buildingFigure) {
+		getFigures().add(0, buildingFigure);
 	}
 }

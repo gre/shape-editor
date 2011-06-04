@@ -8,6 +8,7 @@ import java.awt.event.MouseMotionListener;
 
 import ui.CanvasArea.Mode;
 
+import figure.Circle;
 import figure.FigureGraphic;
 import figure.Point_2D;
 
@@ -17,6 +18,8 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	Env env;
 	CanvasArea canvas;
 	Point_2D lastPosition;
+	
+	FigureGraphic buildingFigure = null;
 	
 	public CanvasMouseListener(CanvasArea c, Env env) {
 		this.canvas = c;
@@ -89,7 +92,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		lastPosition = new Point_2D(x, y);
 		return move;
 	}
-
+	
+	protected void emptyBuildingFigureIfNotInstanceOf(Class<? extends FigureGraphic> c) {
+		if(buildingFigure == null) return;
+		if(!c.isInstance(buildingFigure)) {
+			env.getFigures().remove(buildingFigure);
+			buildingFigure = null;
+		}
+	}
 	
 	public void mouseClicked(MouseEvent e) {
 		Mode mode = canvas.getMode();
@@ -123,26 +133,19 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				if(f.isSelected())
 					f.setTransparent(true);
 			break;
+		case DRAW_CIRCLE:
+			emptyBuildingFigureIfNotInstanceOf(Circle.class);
+			Circle circle = (Circle)buildingFigure;
+			if(buildingFigure!=null) {
+				((Circle)buildingFigure).fitRadiusWithPoint(e.getX(), e.getY());
+				buildingFigure = null;
+			}
+			else {
+				buildingFigure = Circle.createByClick(env, e.getX(), e.getY());
+				env.addFigure(buildingFigure);
+			}
 		}
 		canvas.repaint();
-	}
-
-	public void mouseDragged(MouseEvent e) {
-		Mode mode = canvas.getMode();
-		if(mode!=Mode.SELECT) canvas.setSelection(null);
-		switch(mode) {
-		case SELECT:
-			Selection s = new Selection(new Color(120,120,120,150), new Color(120,120,120,50), new Point_2D(e.getX(), e.getY()), lastPosition);
-			selectPoints(s);
-			canvas.setSelection(s);
-			canvas.repaint();
-			break;
-		case MOVE:
-			Point_2D move = amassMove(e.getX(), e.getY());
-			moveSelected(move.getX(), move.getY());
-			canvas.repaint();
-			break;
-		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
@@ -162,11 +165,61 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			for(FigureGraphic f : env.getFigures())
 				f.setTransparent(false);
 			break;
+		case DRAW_CIRCLE:
+			emptyBuildingFigureIfNotInstanceOf(Circle.class);
+			Circle circle = (Circle)buildingFigure;
+			if(circle!=null && circle.getRadius()>0) {
+				circle.fitRadiusWithPoint(e.getX(), e.getY());
+				buildingFigure = null;
+			}
+			break;
 		}
 		canvas.repaint();
 	}
 
+	public void mouseDragged(MouseEvent e) {
+		Mode mode = canvas.getMode();
+		boolean mustRepaint = true;
+		if(mode!=Mode.SELECT) canvas.setSelection(null);
+		switch(mode) {
+		case SELECT:
+			Selection s = new Selection(new Color(120,120,120,150), new Color(120,120,120,50), new Point_2D(e.getX(), e.getY()), lastPosition);
+			selectPoints(s);
+			canvas.setSelection(s);
+			break;
+		case MOVE:
+			Point_2D move = amassMove(e.getX(), e.getY());
+			moveSelected(move.getX(), move.getY());
+			break;
+		case DRAW_CIRCLE:
+			emptyBuildingFigureIfNotInstanceOf(Circle.class);
+			Circle circle = (Circle)buildingFigure;
+			if(buildingFigure!=null) circle.fitRadiusWithPoint(e.getX(), e.getY());
+			else mustRepaint = false;
+			break;
+		default: 
+			mustRepaint = false;
+		}
+		if(mustRepaint) canvas.repaint();
+	}
+
 	public void mouseMoved(MouseEvent e) {
+		Mode mode = canvas.getMode();
+		boolean mustRepaint = true;
+		if (buildingFigure != null) {
+			switch (mode) {
+			case DRAW_CIRCLE:
+				emptyBuildingFigureIfNotInstanceOf(Circle.class);
+				if(buildingFigure!=null) 
+					((Circle) buildingFigure).fitRadiusWithPoint(e.getX(), e.getY());
+				else
+					mustRepaint = false;
+				break;
+			default:
+				mustRepaint = false;
+			}
+		}
+		if(mustRepaint) canvas.repaint();
 	}
 
 }

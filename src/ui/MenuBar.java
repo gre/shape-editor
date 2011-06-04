@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
+// TODO : Fichier -> Nouveau
 public class MenuBar extends JMenuBar {
 
 	public File openedFile = null;

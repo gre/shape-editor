@@ -14,7 +14,10 @@ public abstract class FigureGraphic implements Figure, Serializable
 	boolean selected = false;
 	
 	boolean transparent = false;
-
+	
+	// TODO FIXME : a utiliser
+	boolean building = false; // L'objet est en train d'etre construit
+	
 	public FigureGraphic (String name, Color colorStroke, Color colorBackground)	{
 		this.colorStroke = colorStroke;	
 		this.colorBackground = colorBackground;	
@@ -55,6 +58,10 @@ public abstract class FigureGraphic implements Figure, Serializable
 			drawName(g);
 		}
 	}
+	
+	public String getName() {
+		return name;
+	}
 
 	public Color getStrokeForCurrentState() {
 		Color c = colorStroke;
@@ -62,7 +69,7 @@ public abstract class FigureGraphic implements Figure, Serializable
 	}
 	public Color getBgForCurrentState() {
 		Color c = colorBackground;
-		return transparent ? new Color(c.getRed(), c.getGreen(), c.getBlue(),  c.getAlpha()/2) : c;
+		return transparent ? new Color(c.getRed(), c.getGreen(), c.getBlue(),  (c.getAlpha()*2)/3) : c;
 	}
 
 	public void setSelected(boolean s) {

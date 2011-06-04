@@ -14,6 +14,7 @@ import figure.Circle;
 import figure.Figure;
 import figure.FigureGraphic;
 
+// TODO : StatusBar
 public class Window extends JFrame {
 	
 	private CanvasArea canvas;
