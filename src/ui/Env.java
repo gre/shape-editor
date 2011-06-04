@@ -33,15 +33,17 @@ public class Env {
 	public Env(CanvasArea canvas) {
 		this.canvas = canvas;
 		// TMP
-		data.figures.add(new Circle("cercle", Color.RED, Color.BLUE, 100, 100, 50));
-		data.figures.add(new Circle("hello", Color.blue, Color.LIGHT_GRAY, 200, 300, 100));
-		data.figures.add(new Rectangle("recta", Color.blue, Color.LIGHT_GRAY, 150, 150, 100,100));
-		Polygon p = new Polygon("polyg", Color.blue, Color.LIGHT_GRAY);
+		data.figures.add(new Circle("cercle", Color.BLUE, new Color(70,100,255), 100, 100, 50));
+		data.figures.add(new Circle("hello", Color.BLACK, Color.RED, 200, 300, 100));
+		data.figures.add(new Rectangle("recta", Color.BLACK, Color.YELLOW, 150, 150, 100,100));
+		Polygon p = new Polygon("polyg", Color.BLACK, Color.GREEN);
 		p.addPoint(0, 0);
-		p.addPoint(100, 100);
-		p.addPoint(100, 300);
+		p.addPoint(100, 0);
+		p.addPoint(200, 100);
+		p.addPoint(100, 200);
+		p.move(200, 200);
 		data.figures.add(p);
-		data.figures.add(new Triangle("triangle", Color.blue, Color.LIGHT_GRAY, 100, 100, 100, 200, 200, 300));
+		data.figures.add(new Triangle("triangle", Color.blue, Color.LIGHT_GRAY, 100, 100, 150, 200, 200, 100));
 	}
 
 	public void sortFigures() {

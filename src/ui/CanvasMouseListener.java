@@ -13,6 +13,7 @@ import figure.Point_2D;
 
 public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
+	boolean mouseIsDown = false;
 	Env env;
 	CanvasArea canvas;
 	Point_2D lastPosition;
@@ -22,9 +23,10 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		this.env = env;
 	}
 	
+	// Some of this functions will probably move in Env
 	public void unselectAll() {
 		for(FigureGraphic f : env.getFigures())
-			f.setSelected(false);
+			setSelected(f, false);
 	}
 	
 	public FigureGraphic getOneByPosition(Point_2D p) {
@@ -33,9 +35,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				return f;
 		return null;
 	}
+	public void setSelected(FigureGraphic figure, boolean value) {
+		figure.setSelected(value);
+		figure.setOpaque(value && mouseIsDown);
+	}
+	
 	public void selectFigure(FigureGraphic figure) {
 		unselectAll();
-		figure.setSelected(true);
+		setSelected(figure, true);
 		env.sortFigures();
 	}
 	
@@ -43,14 +50,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		unselectAll();
 		FigureGraphic figure = getOneByPosition(p);
 		if(figure!=null) {
-			figure.setSelected(true);
+			setSelected(figure, true);
 			env.sortFigures();
 		}
 		return figure;
 	}
 	public void selectPoints(Selection selection) {
 		for(FigureGraphic f : env.getFigures())
-			f.setSelected(selection.contain(f.getCenter()));
+			setSelected(f, selection.contain(f.getCenter()));
 		env.sortFigures();
 	}
 	
@@ -97,11 +104,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	public void mouseExited(MouseEvent e) {}
 	
 	public void mousePressed(MouseEvent e) {
+		mouseIsDown = true;
 		Mode mode = canvas.getMode();
 		canvas.setSelection(null);
-		FigureGraphic figure = getOneByPosition(new Point_2D(e.getX(), e.getY()));
-		if(figure!=null && !figure.isSelected()) selectFigure(figure);
-		
+		FigureGraphic figure = null;
+		if(mode==Mode.MOVE || mode==Mode.SELECT) {
+			figure = getOneByPosition(new Point_2D(e.getX(), e.getY()));
+			if(figure!=null && !figure.isSelected()) selectFigure(figure);
+		}
 		amassMove(e.getX(), e.getY());
 		switch(mode) {
 		case MOVE:
@@ -109,9 +119,12 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				unselectAll();
 				env.getToolbox().select.doClick();
 			}
-			canvas.repaint();
+			for(FigureGraphic f : env.getFigures())
+				if(f.isSelected())
+					f.setOpaque(true);
 			break;
 		}
+		canvas.repaint();
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -133,16 +146,21 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		mouseIsDown = false;
 		Mode mode = canvas.getMode();
 		canvas.setSelection(null);
 		switch(mode) {
 		case SELECT:
 			if(countSelected()>0)
 				env.getToolbox().move.doClick();
+			for(FigureGraphic f : env.getFigures())
+				f.setOpaque(false);
 			break;
 		case MOVE:
 			Point_2D move = amassMove(e.getX(), e.getY());
 			moveSelected(move.getX(), move.getY());
+			for(FigureGraphic f : env.getFigures())
+				f.setOpaque(false);
 			break;
 		}
 		canvas.repaint();

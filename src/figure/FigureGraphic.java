@@ -1,6 +1,5 @@
 package figure;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
@@ -13,6 +12,8 @@ public abstract class FigureGraphic implements Figure, Serializable
 	 * A selected figure should display differently
 	 */
 	boolean selected = false;
+	
+	boolean opaque = false;
 
 	public FigureGraphic (String name, Color colorStroke, Color colorBackground)	{
 		this.colorStroke = colorStroke;	
@@ -57,17 +58,18 @@ public abstract class FigureGraphic implements Figure, Serializable
 
 	public Color getStrokeForCurrentState() {
 		Color c = colorStroke;
-		if(selected) return new Color(c.getRed(), c.getGreen(), c.getBlue(), 200);
-		return c;
+		return opaque ? new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()/2) : c;
 	}
 	public Color getBgForCurrentState() {
 		Color c = colorBackground;
-		if(selected) return new Color(c.getRed(), c.getGreen(), c.getBlue(), 200);
-		return c;
+		return opaque ? new Color(c.getRed(), c.getGreen(), c.getBlue(),  c.getAlpha()/2) : c;
 	}
-	
+
 	public void setSelected(boolean s) {
 		selected = s;
+	}
+	public void setOpaque(boolean o) {
+		opaque = o;
 	}
 	public boolean isSelected() {
 		return selected;
