@@ -41,9 +41,13 @@ public class ToolBox extends JPanel {
 		return b;
 	}
 	public void select(JButton button) {
-		for(JButton b : buttons)
-			b.setSelected(false);
-		button.setSelected(true);
+		for(JButton b : buttons) {
+            b.setSelected(false);
+            b.setBackground(null);
+		}
+		// Soit disant le java c'est portable :
+		button.setSelected(true); // Marche bien sur mac mais pas du tout sur linux!
+        button.setBackground(Color.white); // Marche bien sur linux, pas du tout sur mac!
 	}
 	
 	public ToolBox(Window window, Env env) {
