@@ -1,5 +1,9 @@
 package ui;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 import javax.swing.*;
 
 // TODO : StatusBar
@@ -14,10 +18,17 @@ public class Window extends JFrame {
 	private Env env = new Env(canvas);
 	
 	public Window() {
-		setBounds(100, 100, 800, 600);
+		setBounds(0, 0, 800, 600);
 		setMinimumSize(new Dimension(400, 300));
+		setLocationRelativeTo(null);
 		setTitle("Shape Editor");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		        if(confirm("Quitter et abandonner ce dessin ?"))
+		            System.exit(0);
+		    }
+        });
 		
 		Container pane = getContentPane();
 		pane.setLayout(new GridBagLayout());
@@ -57,6 +68,18 @@ public class Window extends JFrame {
 		
 		setVisible(true);
 	}
+	
+	/**
+	 * Pose une question à l'utilisateur de type Oui/Non à travers une popup 
+	 * @param message : la question
+	 * @return la réponse booléenne
+	 */
+    public boolean confirm(String message, String title) {
+        return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    }
+    public boolean confirm(String message) {
+        return confirm(message, null);
+    }
 	
 	public static void main(String[] args) {
 		new Window();
