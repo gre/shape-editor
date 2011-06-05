@@ -11,6 +11,7 @@ import ui.CanvasArea.Mode;
 
 import figure.*;
 
+// TODO : gros refactoring a faire : deplacer certaines fonctions + factoriser  
 public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
 	boolean mouseIsDown = false;
