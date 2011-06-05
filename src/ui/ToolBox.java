@@ -4,6 +4,8 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -36,7 +38,10 @@ public class ToolBox extends JPanel {
 	Window window;
 	
 	public JButton addImageButton(JButton b) {
-		b.setPreferredSize(new Dimension(36, 36));
+		Dimension d = new Dimension(36, 36);
+	    b.setPreferredSize(d);
+        b.setMinimumSize(d);
+        b.setMaximumSize(d);
 		buttons.add(b);
 		return b;
 	}
@@ -54,28 +59,37 @@ public class ToolBox extends JPanel {
 		this.env = env;
 		this.window = window;
 		setBorder(BorderFactory.createEtchedBorder());
-		setPreferredSize(new Dimension(200, 150));
-		setMaximumSize(new Dimension(200, 150));
-		FlowLayout l = new FlowLayout();
-		l.setAlignment(FlowLayout.LEFT);
+		GridBagLayout l = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
 		setLayout(l);
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
+		
 		JPanel panel = new JPanel();
+		
 		panel.add(addImageButton(select));
 		panel.add(addImageButton(move));
-		add(panel);
+		
+		add(panel, c);
+		c.gridy++;
 		panel = new JPanel();
 		panel.add(addImageButton(newCircle));
 		panel.add(addImageButton(newTriangle));
 		panel.add(addImageButton(newRectangle));
 		panel.add(addImageButton(newPolygon));
-		add(panel);
+		add(panel, c);
+		
+        c.gridy++;
+        c.anchor = GridBagConstraints.CENTER;
+        
 		panel = new JPanel();
 		panel.add(strokeColor);
 		panel.add(strokeLabel);
 		panel.add(bgColor);
 		panel.add(bgLabel);
-		add(panel);
-
+		add(panel, c);
 		bgColor.setSize(20, 20);
 		strokeColor.setSize(20, 20);
 		bgColor.setBackground(env.getBackgroundColor());
