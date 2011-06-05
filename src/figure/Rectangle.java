@@ -24,6 +24,18 @@ public class Rectangle extends FigureGraphic implements Serializable
 		this.height = height;
 		++nbOfRectangles;
 	}
+
+    /**
+     * Create by first click
+     * @param env
+     * @param x
+     * @param y
+     */
+    public Rectangle(Env env, int x, int y) {
+        this("rect_"+(nbOfRectangles+1), env.getStrokeColor(), env.getBackgroundColor(), x, y, 0, 0);
+        setSelected(true);
+        setBuilding(true);
+    }
 	
 	public Point_2D getCenter() {
 		return new Point_2D (topleft.getX()+(width)/2,topleft.getY()+(height)/2);
@@ -66,7 +78,7 @@ public class Rectangle extends FigureGraphic implements Serializable
 	}
 
 	public void setSecondPoint(int x, int y) {
-		int xMin = Math.min(x, topleft.getX());
+	    int xMin = Math.min(x, topleft.getX());
 		int yMin = Math.min(y, topleft.getY());
 		int xMax = Math.max(x, topleft.getX()+width);
 		int yMax = Math.max(y, topleft.getY()+height);
@@ -75,10 +87,9 @@ public class Rectangle extends FigureGraphic implements Serializable
 		topleft = new Point_2D(xMin, yMin);
 	}
 
-	public static Rectangle createByClick(Env env, int x, int y) {
-		String name = "rect_"+(nbOfRectangles+1);
-		Rectangle r = new Rectangle(name, env.getStrokeColor(), env.getBackgroundColor(), x, y, 0, 0);
-		r.setSelected(true);
-		return r;
-	}
+    @Override
+    public boolean isBuildingConvenientToBeFinished() {
+        return getWidth()>THRESHOLD_BUILDING_PX && getHeight()>THRESHOLD_BUILDING_PX;
+    }
+
 }	

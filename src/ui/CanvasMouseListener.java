@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import com.sun.management.jmx.Trace;
+
 import ui.CanvasArea.Mode;
 
 import figure.*;
@@ -27,6 +29,11 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	public void unselectAll() {
 		for(FigureGraphic f : env.getFigures())
 			setSelected(f, false);
+	}
+	
+	public void finishBuildingFigure() {
+	    buildingFigure.setBuilding(false);
+	    buildingFigure = null;
 	}
 	
 	public FigureGraphic getOneByPosition(Point_2D p) {
@@ -94,7 +101,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		if(buildingFigure == null) return;
 		if(!c.isInstance(buildingFigure)) {
 			env.getFigures().remove(buildingFigure);
-			buildingFigure = null;
+			finishBuildingFigure();
 		}
 	}
 	
@@ -134,27 +141,65 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			emptyBuildingFigureIfNotInstanceOf(Circle.class);
 			Circle circle = (Circle)buildingFigure;
 			if(buildingFigure!=null) {
-				circle.fitRadiusWithPoint(e.getX(), e.getY());
-				buildingFigure = null;
+			    if(buildingFigure.isBuildingConvenientToBeFinished()) {
+    				circle.fitRadiusWithPoint(e.getX(), e.getY());
+    				finishBuildingFigure();
+			    }
 			}
 			else {
-				buildingFigure = Circle.createByClick(env, e.getX(), e.getY());
+				buildingFigure = new Circle(env, e.getX(), e.getY());
 				env.addFigure(buildingFigure);
 			}
 			break;
-		case DRAW_RECTANGLE:
-			emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
-			Rectangle rectangle = (Rectangle) buildingFigure;
-			if(buildingFigure!=null) {
-				rectangle.setSecondPoint(e.getX(), e.getY());
-				buildingFigure = null;
-			}
-			else {
-				buildingFigure = Rectangle.createByClick(env, e.getX(), e.getY());
-				env.addFigure(buildingFigure);
-			}
-			break;
-		}
+        case DRAW_RECTANGLE:
+            emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+            Rectangle rectangle = (Rectangle) buildingFigure;
+            if(buildingFigure!=null) {
+                if(buildingFigure.isBuildingConvenientToBeFinished()) {
+                    rectangle.setSecondPoint(e.getX(), e.getY());
+                    finishBuildingFigure();
+                }
+            }
+            else {
+                buildingFigure = new Rectangle(env, e.getX(), e.getY());
+                env.addFigure(buildingFigure);
+            }
+            break;
+        case DRAW_TRIANGLE:
+            emptyBuildingFigureIfNotInstanceOf(Triangle.class);
+            if(buildingFigure!=null) {
+                Triangle tri = ((Triangle)buildingFigure);
+                if(tri.isBuildingConvenientToBeFinished()) {
+                    tri.closePath();
+                    finishBuildingFigure();
+                }
+                else {
+                    ((Triangle)buildingFigure).addPoint(e.getX(), e.getY());
+                }
+            }
+            else {
+                buildingFigure = new Triangle(env, e.getX(), e.getY());
+                env.addFigure(buildingFigure);
+            }
+            break;
+        case DRAW_POLYGON:
+            emptyBuildingFigureIfNotInstanceOf(Polygon.class);
+            if(buildingFigure!=null) {
+                Polygon poly = ((Polygon)buildingFigure);
+                if(poly.isBuildingConvenientToBeFinished()) {
+                    poly.closePath();
+                    finishBuildingFigure();
+                }
+                else {
+                    ((Polygon)buildingFigure).addPoint(e.getX(), e.getY());
+                }
+            }
+            else {
+                buildingFigure = new Polygon(env, e.getX(), e.getY());
+                env.addFigure(buildingFigure);
+            }
+            break;
+        }
 		canvas.repaint();
 	}
 
@@ -178,19 +223,31 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		case DRAW_CIRCLE:
 			emptyBuildingFigureIfNotInstanceOf(Circle.class);
 			Circle circle = (Circle)buildingFigure;
-			if(circle!=null && circle.getRadius()>0) {
+			if(circle!=null && circle.isBuildingConvenientToBeFinished()) {
 				circle.fitRadiusWithPoint(e.getX(), e.getY());
-				buildingFigure = null;
+				finishBuildingFigure();
 			}
 			break;
-		case DRAW_RECTANGLE:
-			emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
-			Rectangle rectangle = (Rectangle) buildingFigure;
-			if(rectangle!=null && rectangle.getWidth()>0 && rectangle.getHeight()>0) {
-				rectangle.setSecondPoint(e.getX(), e.getY());
-				buildingFigure = null;
-			}
-			break;
+        case DRAW_RECTANGLE:
+            emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+            Rectangle rectangle = (Rectangle) buildingFigure;
+            if(rectangle!=null && rectangle.isBuildingConvenientToBeFinished()) {
+                rectangle.setSecondPoint(e.getX(), e.getY());
+                finishBuildingFigure();
+            }
+            break;
+        case DRAW_TRIANGLE:
+            emptyBuildingFigureIfNotInstanceOf(Triangle.class);
+            if(buildingFigure!=null && buildingFigure.isBuildingConvenientToBeFinished()) {
+                ((Triangle) buildingFigure).editLastPoint(e.getX(), e.getY());
+            }
+            break;
+        case DRAW_POLYGON:
+            emptyBuildingFigureIfNotInstanceOf(Polygon.class);
+            if(buildingFigure!=null && buildingFigure.isBuildingConvenientToBeFinished()) {
+                ((Polygon) buildingFigure).editLastPoint(e.getX(), e.getY());
+            }
+            break;
 		}
 		canvas.repaint();
 	}
@@ -215,12 +272,22 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			if(buildingFigure!=null) circle.fitRadiusWithPoint(e.getX(), e.getY());
 			else mustRepaint = false;
 			break;
-		case DRAW_RECTANGLE:
-			emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
-			Rectangle rectangle = (Rectangle) buildingFigure;
-			if(buildingFigure!=null) rectangle.setSecondPoint(e.getX(), e.getY());
-			else mustRepaint = false;
-			break;
+        case DRAW_RECTANGLE:
+            emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+            Rectangle rectangle = (Rectangle) buildingFigure;
+            if(buildingFigure!=null) rectangle.setSecondPoint(e.getX(), e.getY());
+            else mustRepaint = false;
+            break;
+        case DRAW_TRIANGLE:
+            emptyBuildingFigureIfNotInstanceOf(Triangle.class);
+            if(buildingFigure!=null) ((Triangle) buildingFigure).editLastPoint(e.getX(), e.getY());
+            else mustRepaint = false;
+            break;
+        case DRAW_POLYGON:
+            emptyBuildingFigureIfNotInstanceOf(Polygon.class);
+            if(buildingFigure!=null) ((Polygon) buildingFigure).editLastPoint(e.getX(), e.getY());
+            else mustRepaint = false;
+            break;
 		default: 
 			mustRepaint = false;
 		}
@@ -237,11 +304,21 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				if(buildingFigure!=null) ((Circle) buildingFigure).fitRadiusWithPoint(e.getX(), e.getY());
 				else mustRepaint = false;
 				break;
-			case DRAW_RECTANGLE:
-				emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
-				if(buildingFigure!=null) ((Rectangle) buildingFigure).setSecondPoint(e.getX(), e.getY());
-				else mustRepaint = false;
-				break;
+            case DRAW_RECTANGLE:
+                emptyBuildingFigureIfNotInstanceOf(Rectangle.class);
+                if(buildingFigure!=null) ((Rectangle) buildingFigure).setSecondPoint(e.getX(), e.getY());
+                else mustRepaint = false;
+                break;
+            case DRAW_TRIANGLE:
+                emptyBuildingFigureIfNotInstanceOf(Triangle.class);
+                if(buildingFigure!=null) ((Triangle) buildingFigure).editLastPoint(e.getX(), e.getY());
+                else mustRepaint = false;
+                break;
+            case DRAW_POLYGON:
+                emptyBuildingFigureIfNotInstanceOf(Polygon.class);
+                if(buildingFigure!=null) ((Polygon) buildingFigure).editLastPoint(e.getX(), e.getY());
+                else mustRepaint = false;
+                break;
 			default:
 				mustRepaint = false;
 			}

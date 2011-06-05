@@ -23,6 +23,18 @@ public class Circle extends FigureGraphic implements Serializable
 		this.radius=radius;
 		++nbOfCircles;
 	}
+    
+    /**
+     * Create by first click
+     * @param env
+     * @param x
+     * @param y
+     */
+    public Circle(Env env, int x, int y) {
+        this("circle_"+(nbOfCircles+1), env.getStrokeColor(), env.getBackgroundColor(), x, y, 0);
+        setSelected(true);
+        setBuilding(true);
+    }
 	
 	public String toString() {
 		return new String(" circle : "+ name +" center : "+ center.toString()+
@@ -67,10 +79,8 @@ public class Circle extends FigureGraphic implements Serializable
 		return Math.PI*radius*radius;
 	}
 
-	public static Circle createByClick(Env env, int x, int y) {
-		String name = "circle_"+(nbOfCircles+1);
-		Circle c = new Circle(name, env.getStrokeColor(), env.getBackgroundColor(), x, y, 0);
-		c.setSelected(true);
-		return c;
-	}
+    @Override
+    public boolean isBuildingConvenientToBeFinished() {
+        return 2*radius > THRESHOLD_BUILDING_PX;
+    }
 }	
