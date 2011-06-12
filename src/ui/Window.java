@@ -34,12 +34,13 @@ public class Window extends JFrame {
 
 		menu = new MenuBar(this, env);
 		toolbox = new ToolBox(this, env);
-		tooloptions = new ToolOptions(env);
+		tooloptions = new ToolOptions(this, env);
 		canvas = new CanvasArea(env);
 		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
 		CanvasKeyListener ckl = new CanvasKeyListener(canvas, env);
 		
 		env.setToolbox(toolbox);
+		env.setToolOptions(tooloptions);
 		env.setCanvas(canvas);
 		env.setCanvasMouseListener(cml);
 		

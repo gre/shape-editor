@@ -129,4 +129,8 @@ public class Rectangle extends FigureGraphic implements Serializable
 		setSecondPoint(x, y);
 	}
 
+	@Override
+	public String getShapeName() {
+		return "Rectangle";
+	}
 }	

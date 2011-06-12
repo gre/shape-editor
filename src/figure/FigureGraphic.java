@@ -52,14 +52,22 @@ public abstract class FigureGraphic implements Figure, Serializable
     	colorBackground = bg;
 	}
 
-	public Color getColorStroke()
+	public Color getStrokeColor()
 	{
 		return colorStroke;	
 	}
 
-	public Color getColorBackground()
+	public Color getBackgroundColor()
 	{
 		return colorBackground;	
+	}
+
+	public void setStrokeColor(Color c) {
+		colorStroke = c;
+	}
+
+	public void setBackgroundColor(Color c) {
+		colorBackground = c;
 	}
 
 	public static double distance(Figure f1, Figure f2)
@@ -86,9 +94,12 @@ public abstract class FigureGraphic implements Figure, Serializable
 			drawName(g);
 		}
 	}
-	
+
 	public String getName() {
 		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	@Override
@@ -122,4 +133,6 @@ public abstract class FigureGraphic implements Figure, Serializable
 	public abstract void onPressPoint(int x, int y);
 	public abstract void onReleasePoint(int x, int y);
 	public abstract void onMovePoint(int x, int y);
+
+	public abstract String getShapeName();
 }

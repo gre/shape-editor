@@ -28,6 +28,7 @@ public class Env {
 	}
 
 	protected ToolBox toolbox;
+	protected ToolOptions toolOptions;
 
 	protected Color bg = new Color(150, 150, 250);
 	protected Color stroke = Color.BLACK;
@@ -116,6 +117,12 @@ public class Env {
 	}
 	public ToolBox getToolbox() {
 		return toolbox;
+	}	
+	public void setToolOptions(ToolOptions t) {
+		toolOptions = t;
+	}
+	public ToolOptions getToolOptions() {
+		return toolOptions;
 	}
 	
 	public boolean saveToFile(File f) {
@@ -149,11 +156,29 @@ public class Env {
 		data = new Data();
 	}
 	
+	public boolean listsAreSame(List<FigureGraphic> f, List<FigureGraphic> g) {
+		return f.size() == g.size() && f.containsAll(g);
+	}
+	
+	List<FigureGraphic> lastSelection = new ArrayList<FigureGraphic>();
+	public void onSelectionChanged() {
+		List<FigureGraphic> s = new ArrayList<FigureGraphic>( getSelected() );
+		if(!listsAreSame(s, lastSelection)) {
+			canvas.repaint();
+			toolOptions.onSelectionChanged();
+		}
+		lastSelection = s;
+	}
 	
 	// Selection
-	public void unselectAll() {
+
+	private void emptySelection() {
 		for(FigureGraphic f : getFigures())
 			setSelected(f, false);
+	}
+	public void unselectAll() {
+		emptySelection();
+		onSelectionChanged();
 	}
 	
 	public FigureGraphic getOneByPosition(Point_2D p) {
@@ -162,7 +187,7 @@ public class Env {
 				return f;
 		return null;
 	}
-	public void setSelected(FigureGraphic figure, boolean value) {
+	private void setSelected(FigureGraphic figure, boolean value) {
 		figure.setSelected(value);
 		figure.setTransparent(value && canvasMouseListener.mouseIsDown);
 	}
@@ -175,31 +200,36 @@ public class Env {
 	}
 	
 	public void selectFigure(FigureGraphic figure) {
-		unselectAll();
+		emptySelection();
 		setSelected(figure, true);
 		sortFigures();
+		onSelectionChanged();
 	}
 	
 	public FigureGraphic selectOneByPosition(Point_2D p) {
-		unselectAll();
+		emptySelection();
 		FigureGraphic figure = getOneByPosition(p);
 		if(figure!=null) {
 			setSelected(figure, true);
 			sortFigures();
 		}
+		onSelectionChanged();
 		return figure;
 	}
 	public void selectPoints(Selection selection) {
 		for(FigureGraphic f : getFigures())
 			setSelected(f, selection.contain(f.getCenter()));
 		sortFigures();
+		onSelectionChanged();
+	}
+	public void selectAll() {
+		for(FigureGraphic f : getFigures())
+			f.setSelected(true);
+		onSelectionChanged();
 	}
 	
 	public int countSelected() {
-		int nb = 0;
-		for(FigureGraphic f : getSelected())
-			nb ++;
-		return nb;
+		return getSelected().size();
 	}
 	
 	public void moveSelected(int dx, int dy) {
@@ -209,14 +239,14 @@ public class Env {
 	
 	public void remove(Figure figure) {
 		getFigures().remove(figure);
-		canvas.repaint();
+		onSelectionChanged();
 	}
 	
 	public void removeSelected() {
 		List<FigureGraphic> figures = getFigures();
 		for(FigureGraphic f : getSelected())
 			figures.remove(f);
-		canvas.repaint();
+		onSelectionChanged();
 	}
 	
 }

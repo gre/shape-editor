@@ -104,6 +104,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 					buildingFigure = mode.getDrawClass().newInstance();
 					buildingFigure.init(env, e.getX(), e.getY());
 					env.addFigure(buildingFigure);
+					env.onSelectionChanged();
 				}
 				catch (Exception exception) {
 					exception.printStackTrace();

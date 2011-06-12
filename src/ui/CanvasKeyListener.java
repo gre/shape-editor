@@ -1,11 +1,11 @@
 package ui;
 
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import figure.FigureGraphic;
 
-public class CanvasKeyListener implements KeyListener {
+public class CanvasKeyListener extends KeyAdapter {
 
 	public CanvasArea canvas;
 	public Env env;
@@ -15,8 +15,6 @@ public class CanvasKeyListener implements KeyListener {
 		this.env = env;
 	}
 	
-	public void keyPressed(KeyEvent e) {}
-
 	public void keyReleased(KeyEvent e) {
 		FigureGraphic figure;
 		CanvasMouseListener cml = env.getCanvasMouseListener();
@@ -24,21 +22,27 @@ public class CanvasKeyListener implements KeyListener {
 		case 10: // ENTER
 			figure = cml.getBuildingFigure();
 			if(figure!=null && figure.canBeFinishedWithKey()) cml.finishBuildingFigure();
-			break;
+			return;
 		case 27: // ESCAPE
 			figure = cml.getBuildingFigure();
 			if(figure !=null) {
 				cml.finishBuildingFigure();
 				env.remove(figure);
 			}
-			break;
+			return;
 		case 127: // DELETE
 			env.removeSelected();
-			break;
+			return;
+		}
+		switch(e.getKeyChar()) {
+		case 'a':
+			if(env.getFigures().size() == env.getSelected().size())
+				env.unselectAll();
+			else
+				env.selectAll();
+			return;
 		}
 		// System.out.print(e.getKeyCode());
 	}
-
-	public void keyTyped(KeyEvent e) {}
 	
 }

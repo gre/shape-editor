@@ -176,5 +176,8 @@ public class Polygon extends FigureGraphic implements Serializable
 	public void onMovePoint(int x, int y) {
 		editLastPoint(x, y);
 	}
-	
+	@Override
+	public String getShapeName() {
+		return "Polygone";
+	}
 }	

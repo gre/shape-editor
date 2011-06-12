@@ -43,7 +43,7 @@ public class MenuBar extends JMenuBar {
 	}
 
 	public void save(File f) {
-		openedFile = env.saveToFile(openedFile) ? f : null;
+		openedFile = env.saveToFile(f) ? f : null;
 	}
 	
 	class ShapeEditorFileFilter extends FileFilter {

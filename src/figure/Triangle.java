@@ -38,4 +38,9 @@ public class Triangle extends Polygon implements Serializable
     protected boolean drawTerminaisonEnabled() {
         return false;
     }
+
+	@Override
+	public String getShapeName() {
+		return "Triangle";
+	}
 }

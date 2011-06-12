@@ -116,4 +116,9 @@ public class Circle extends FigureGraphic implements Serializable
 	public void onMovePoint(int x, int y) {
 		fitRadiusWithPoint(x, y);
 	}
+
+	@Override
+	public String getShapeName() {
+		return "Cercle";
+	}
 }	
