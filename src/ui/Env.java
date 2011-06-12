@@ -118,25 +118,29 @@ public class Env {
 		return toolbox;
 	}
 	
-	public void saveToFile(File f) {
+	public boolean saveToFile(File f) {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
 			oos.writeObject(data);
+			return true;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			window.error("Impossible de sauvegarder le dessin dans le fichier choisi");
 		}
+		return false;
 	}
 	
-	public void openFromFile(File f) {
+	public boolean openFromFile(File f) {
 		try {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
 			setData((Data) ois.readObject());
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			window.error("Impossible d'ouvrir le fichier");
 		}
+		return false;
 	}
 	public void addFigure(FigureGraphic buildingFigure) {
 		getFigures().add(0, buildingFigure);

@@ -39,17 +39,11 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	public void open(File f) {
-		openedFile = f;
-		env.openFromFile(f);
+		openedFile = env.openFromFile(f) ? f : null;
 	}
-	
+
 	public void save(File f) {
-		openedFile = f;
-		save();
-	}
-	
-	public void save() {
-		env.saveToFile(openedFile);
+		openedFile = env.saveToFile(openedFile) ? f : null;
 	}
 	
 	class ShapeEditorFileFilter extends FileFilter {
@@ -93,7 +87,7 @@ public class MenuBar extends JMenuBar {
 		}
 		public void actionPerformed(ActionEvent e) {
 			if(!saveAs && menu.openedFile!=null) {
-				menu.save();
+				menu.save(menu.openedFile);
 				return;
 			}
 			
