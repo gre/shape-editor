@@ -2,7 +2,6 @@ package ui;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.*;
 
@@ -15,7 +14,7 @@ public class Window extends JFrame {
 	public ToolBox toolbox;
 	public ToolOptions tooloptions;
 	
-	private Env env = new Env(canvas);
+	private Env env = new Env();
 	
 	public Window() {
 		setBounds(0, 0, 800, 600);
@@ -38,11 +37,12 @@ public class Window extends JFrame {
 		toolbox = new ToolBox(this, env);
 		tooloptions = new ToolOptions(env);
 		canvas = new CanvasArea(env);
+		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
 		
 		env.setToolbox(toolbox);
 		env.setCanvas(canvas);
+		env.setCanvasMouseListener(cml);
 		
-		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
 		canvas.addMouseListener(cml);
 		canvas.addMouseMotionListener(cml);
 		

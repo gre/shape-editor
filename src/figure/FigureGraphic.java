@@ -34,13 +34,23 @@ public abstract class FigureGraphic implements Figure, Serializable
     public void setBuilding(boolean building) {
         this.building = building;
     }
-    
-    public abstract boolean isBuildingConvenientToBeFinished();
 
-    public FigureGraphic (String name, Color colorStroke, Color colorBackground)	{
+    public FigureGraphic (String name, Color colorStroke, Color colorBackground) {
 		this.colorStroke = colorStroke;	
 		this.colorBackground = colorBackground;	
 		this.name = name;
+	}
+
+    public FigureGraphic (String name) {
+    	this(name, Color.black, Color.white);
+	}
+    
+    public void setColors(Env env) {
+    	setColors(env.getStrokeColor(), env.getBackgroundColor());
+    }
+	public void setColors(Color stroke, Color bg) {
+		colorStroke = stroke;
+    	colorBackground = bg;
 	}
 
 	public Color getColorStroke()
@@ -81,6 +91,11 @@ public abstract class FigureGraphic implements Figure, Serializable
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
 
 	public Color getStrokeForCurrentState() {
 		Color c = colorStroke;
@@ -100,4 +115,10 @@ public abstract class FigureGraphic implements Figure, Serializable
 	public boolean isSelected() {
 		return selected;
 	}
+	
+	public abstract void init(Env env, int x, int y);
+	public abstract boolean canBeFinished();
+	public abstract void onPressPoint(int x, int y);
+	public abstract void onReleasePoint(int x, int y);
+	public abstract void onMovePoint(int x, int y);
 }

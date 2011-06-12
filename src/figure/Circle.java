@@ -17,32 +17,40 @@ public class Circle extends FigureGraphic implements Serializable
 	protected Point_2D center;
 	protected int radius;
 	
-	public Circle(String name, Color colorStroke, Color colorBackground, int x, int y, int radius) {
-		super(name,colorStroke,colorBackground);
-		center = new Point_2D(x,y);
-		this.radius=radius;
+	public Circle(String name) {
+		super(name);
 		++nbOfCircles;
 	}
-    
-    /**
+	
+	public Circle() {
+		this("circle_"+(nbOfCircles+1));
+	}
+	
+    public Circle(String name, Color stroke, Color bg, int x, int y, int radius) {
+		super(name);
+		setColors(stroke, bg);
+		setRadius(radius);
+		setCenter(x, y);
+    }
+
+	/**
      * Create by first click
      * @param env
      * @param x
      * @param y
      */
-    public Circle(Env env, int x, int y) {
-        this("circle_"+(nbOfCircles+1), env.getStrokeColor(), env.getBackgroundColor(), x, y, 0);
+    public void init(Env env, int x, int y) {
+        setColors(env);
+        setCenter(x, y);
         setSelected(true);
         setBuilding(true);
     }
-	
-	public String toString() {
-		return new String(" circle : "+ name +" center : "+ center.toString()+
-			" radius : "+ radius+"\n\t\t background color: "+colorBackground+" stroke color "+colorStroke );
-	}
 
 	public Point_2D getCenter() {
 		return center;
+	}
+	public void setCenter(int x, int y) {
+		center = new Point_2D(x, y);
 	}
 
 	public void move(int dx, int dy) {
@@ -80,7 +88,22 @@ public class Circle extends FigureGraphic implements Serializable
 	}
 
     @Override
-    public boolean isBuildingConvenientToBeFinished() {
+    public boolean canBeFinished() {
         return 2*radius > THRESHOLD_BUILDING_PX;
     }
+
+	@Override
+	public void onPressPoint(int x, int y) {
+		if(!canBeFinished()) setCenter(x, y);
+	}
+
+	@Override
+	public void onReleasePoint(int x, int y) {
+		fitRadiusWithPoint(x, y);
+	}
+
+	@Override
+	public void onMovePoint(int x, int y) {
+		fitRadiusWithPoint(x, y);
+	}
 }	

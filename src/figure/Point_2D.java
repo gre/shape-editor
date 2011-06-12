@@ -40,7 +40,7 @@ public class Point_2D implements Serializable
 
 	public String toString()
 	{
-		return new String (" x = " + getX() + " y = " + getY());
+		return new String ("("+getX()+", "+getY()+")");
 	}
 
 	public void move(int dx, int dy)

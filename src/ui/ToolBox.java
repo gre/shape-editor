@@ -193,6 +193,7 @@ public class ToolBox extends JPanel {
 			if(e.getSource() instanceof JButton) 
 				select((JButton)e.getSource());
 			env.getCanvas().setMode(mode);
+			env.getCanvasMouseListener().onToolChanged(mode);
 		}
 	}
 }
