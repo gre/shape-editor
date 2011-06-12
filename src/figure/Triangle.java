@@ -23,10 +23,15 @@ public class Triangle extends Polygon implements Serializable
 		addPoint(x2, y2);
 		addPoint(x3, y3);
 	}
-	@Override
+
     public boolean canBeFinished() {
-        int size = points.size();
-        return size==4;
+        return points.size()==4;
+    }
+    public boolean canBeFinishedWithKey() {
+    	return canBeFinished();
+    }
+    public boolean canBeFinishedWithMouse() {
+    	return canBeFinished();
     }
     
     @Override

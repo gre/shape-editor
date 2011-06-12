@@ -23,8 +23,13 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		this.env = env;
 	}
 	
+	public FigureGraphic getBuildingFigure() {
+		return buildingFigure;
+	}
+	
 	public void finishBuildingFigure() {
 		buildingFigure.setBuilding(false);
+		buildingFigure.onFigureFinish();
 		buildingFigure = null;
 	}
 	
@@ -87,9 +92,12 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		case DRAW_TRIANGLE:
 		case DRAW_POLYGON:
 			if(buildingFigure!=null) {
-				boolean canBeFinished = buildingFigure.canBeFinished();
-				buildingFigure.onPressPoint(e.getX(), e.getY());
-				if(canBeFinished) finishBuildingFigure();
+				if(buildingFigure.canBeFinishedWithMouse()) {
+					finishBuildingFigure();
+				}
+				else {
+					buildingFigure.onPressPoint(e.getX(), e.getY());
+				}
 			}
 			else {
 				try {
@@ -128,7 +136,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		case DRAW_POLYGON:
 		case DRAW_RECTANGLE:
 			if(buildingFigure!=null) {
-				boolean canBeFinished = buildingFigure.canBeFinished();
+				boolean canBeFinished = buildingFigure.canBeFinishedWithMouse();
 				buildingFigure.onReleasePoint(e.getX(), e.getY());
 				if(canBeFinished) finishBuildingFigure();
 			}

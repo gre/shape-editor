@@ -101,14 +101,22 @@ public class Rectangle extends FigureGraphic implements Serializable
 	    b = new Point_2D(x, y);
 	}
 
-    @Override
-    public boolean canBeFinished() {
+    private boolean canBeFinished() {
         return getWidth()>THRESHOLD_BUILDING_PX && getHeight()>THRESHOLD_BUILDING_PX;
+    }
+    public boolean canBeFinishedWithKey() {
+    	return canBeFinished();
+    }
+    public boolean canBeFinishedWithMouse() {
+    	return canBeFinished();
     }
 
 	@Override
+	public void onFigureFinish() {
+	}
+    
+    @Override
 	public void onPressPoint(int x, int y) {
-		if(canBeFinished()) setSecondPoint(x, y);
 	}
 
 	@Override

@@ -108,6 +108,12 @@ public class Polygon extends FigureGraphic implements Serializable
 			}
 			if(drawTerminaisonEnabled() && canBeFinished()) {
 				// Dessine une poignee de terminaison
+				if(canBeFinishedWithMouse()) // mouseover
+					g.setColor(new Color(255, 100, 100));
+				else
+					g.setColor(Color.white);
+				g.fillOval(first.x-FINISH_HANDLE_RADIUS_PX/2, first.y-FINISH_HANDLE_RADIUS_PX/2, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+				g.setColor(new Color(0, 0, 0));
 				g.drawOval(first.x-FINISH_HANDLE_RADIUS_PX/2, first.y-FINISH_HANDLE_RADIUS_PX/2, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
 			}
 			
@@ -138,30 +144,32 @@ public class Polygon extends FigureGraphic implements Serializable
 		return true;
 	}
 	
-	@Override
-	public boolean canBeFinished() {
-		int size = points.size();
-		return size>3 && points.get(0).distance(points.get(size-1))<FINISH_HANDLE_RADIUS_PX/2;
+	private boolean canBeFinished() {
+		return points.size() > 3;
 	}
+    public boolean canBeFinishedWithKey() {
+    	return canBeFinished();
+    }
+    public boolean canBeFinishedWithMouse() {
+    	return canBeFinished() && points.get(0).distance(points.get(points.size()-1))<FINISH_HANDLE_RADIUS_PX/2;
+    }
 
 	public void closePath() {
 		points.remove(points.size()-1);
 	}
 	
 	@Override
+	public void onFigureFinish() {
+		closePath();
+	}
+	
+	@Override
 	public void onPressPoint(int x, int y) {
-		if(canBeFinished()) {
-			closePath();
-		}
-		else {
-			addPoint(x, y);
-		}
+		addPoint(x, y);
 	}
 	@Override
 	public void onReleasePoint(int x, int y) {
-		if(canBeFinished()) {
-			closePath();
-		}
+		
 	}
 	
 	@Override

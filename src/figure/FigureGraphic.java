@@ -116,7 +116,9 @@ public abstract class FigureGraphic implements Figure, Serializable
 	}
 	
 	public abstract void init(Env env, int x, int y);
-	public abstract boolean canBeFinished();
+	public abstract boolean canBeFinishedWithMouse();
+	public abstract boolean canBeFinishedWithKey();
+	public abstract void onFigureFinish();
 	public abstract void onPressPoint(int x, int y);
 	public abstract void onReleasePoint(int x, int y);
 	public abstract void onMovePoint(int x, int y);

@@ -87,14 +87,24 @@ public class Circle extends FigureGraphic implements Serializable
 		return Math.PI*radius*radius;
 	}
 
-    @Override
-    public boolean canBeFinished() {
+    private boolean canBeFinished() {
         return 2*radius > THRESHOLD_BUILDING_PX;
     }
+    public boolean canBeFinishedWithKey() {
+    	return canBeFinished();
+    }
+    public boolean canBeFinishedWithMouse() {
+    	return canBeFinished();
+    }
 
+    @Override
+    public void onFigureFinish() {
+    	
+    }
+    
 	@Override
 	public void onPressPoint(int x, int y) {
-		if(!canBeFinished()) setCenter(x, y);
+		setCenter(x, y);
 	}
 
 	@Override

@@ -37,6 +37,7 @@ public class Window extends JFrame {
 		tooloptions = new ToolOptions(env);
 		canvas = new CanvasArea(env);
 		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
+		CanvasKeyListener ckl = new CanvasKeyListener(canvas, env);
 		
 		env.setToolbox(toolbox);
 		env.setCanvas(canvas);
@@ -44,6 +45,7 @@ public class Window extends JFrame {
 		
 		canvas.addMouseListener(cml);
 		canvas.addMouseMotionListener(cml);
+		canvas.addKeyListener(ckl);
 		
 		setJMenuBar(menu);
 		constraints.insets = new Insets(2, 2, 2, 2);

@@ -166,6 +166,13 @@ public class Env {
 		figure.setSelected(value);
 		figure.setTransparent(value && canvasMouseListener.mouseIsDown);
 	}
+	public List<FigureGraphic> getSelected() {
+		List<FigureGraphic> figures = new ArrayList<FigureGraphic>();
+		for(FigureGraphic f : getFigures())
+			if(f.isSelected())
+				figures.add(f);
+		return figures;
+	}
 	
 	public void selectFigure(FigureGraphic figure) {
 		unselectAll();
@@ -190,16 +197,26 @@ public class Env {
 	
 	public int countSelected() {
 		int nb = 0;
-		for(FigureGraphic f : getFigures())
-			if(f.isSelected())
-				nb ++;
+		for(FigureGraphic f : getSelected())
+			nb ++;
 		return nb;
 	}
 	
 	public void moveSelected(int dx, int dy) {
-		for(FigureGraphic f : getFigures())
-			if(f.isSelected())
-				f.move(dx, dy);
+		for(FigureGraphic f : getSelected())
+			f.move(dx, dy);
+	}
+	
+	public void remove(Figure figure) {
+		getFigures().remove(figure);
+		canvas.repaint();
+	}
+	
+	public void removeSelected() {
+		List<FigureGraphic> figures = getFigures();
+		for(FigureGraphic f : getSelected())
+			figures.remove(f);
+		canvas.repaint();
 	}
 	
 }
