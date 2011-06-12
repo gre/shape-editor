@@ -24,7 +24,6 @@ public abstract class FigureGraphic implements Figure, Serializable
 	
 	protected boolean transparent = false;
 	
-	// TODO FIXME : a utiliser
 	protected boolean building = false; // L'objet est en train d'etre construit
 	
 	public boolean isBuilding() {

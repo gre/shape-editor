@@ -5,7 +5,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
-// TODO : StatusBar
 @SuppressWarnings("serial")
 public class Window extends JFrame {
 	
@@ -14,7 +13,7 @@ public class Window extends JFrame {
 	public ToolBox toolbox;
 	public ToolOptions tooloptions;
 	
-	private Env env = new Env();
+	private Env env = new Env(this);
 	
 	public Window() {
 		setBounds(0, 0, 800, 600);
@@ -80,6 +79,10 @@ public class Window extends JFrame {
     public boolean confirm(String message) {
         return confirm(message, null);
     }
+
+	public void error(String message) {
+		JOptionPane.showConfirmDialog(this, message, null, JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
+	}
 	
 	public static void main(String[] args) {
 		new Window();

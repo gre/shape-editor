@@ -16,7 +16,6 @@ import javax.swing.*;
 
 import ui.CanvasArea.Mode;
 
-// TODO : une classe ToolBoxButton
 @SuppressWarnings("serial")
 public class ToolBox extends JPanel {
 	

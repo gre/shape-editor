@@ -7,7 +7,6 @@ import java.io.File;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
-// TODO : Popup de validation des actions (Fermer le dessin actuel sans sauvegarder ?)
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 

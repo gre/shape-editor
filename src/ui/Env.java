@@ -16,6 +16,8 @@ public class Env {
 	
 	protected Data data = new Data();
 	
+	protected Window window;
+	
 	protected CanvasArea canvas;
 	protected CanvasMouseListener canvasMouseListener;
 	public CanvasMouseListener getCanvasMouseListener() {
@@ -54,7 +56,8 @@ public class Env {
 		List<FigureGraphic> figures = new ArrayList<FigureGraphic>();
 	}
 	
-	public Env() {
+	public Env(Window window) {
+		this.window = window;
 		/*
 		data.figures.add(new Circle("cercle", Color.BLUE, new Color(70,100,255), 100, 100, 50));
 		data.figures.add(new Circle("hello", Color.BLACK, Color.RED, 200, 300, 100));
@@ -122,7 +125,7 @@ public class Env {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			System.err.println("TODO - handle exception: "+e);
+			window.error("Impossible de sauvegarder le dessin dans le fichier choisi");
 		}
 	}
 	
@@ -132,7 +135,7 @@ public class Env {
 			setData((Data) ois.readObject());
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("TODO - handle exception: "+e);
+			window.error("Impossible d'ouvrir le fichier");
 		}
 	}
 	public void addFigure(FigureGraphic buildingFigure) {
