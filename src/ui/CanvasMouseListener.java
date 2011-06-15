@@ -87,10 +87,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 				if(f.isSelected())
 					f.setTransparent(true);
 			break;
-		case DRAW_CIRCLE:
-		case DRAW_RECTANGLE:
-		case DRAW_TRIANGLE:
-		case DRAW_POLYGON:
+		default:
 			if(buildingFigure!=null) {
 				if(buildingFigure.canBeFinishedWithMouse()) {
 					finishBuildingFigure();
@@ -110,7 +107,6 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 					exception.printStackTrace();
 				}
 			}
-			break;
 		}
 		canvas.repaint();
 	}
@@ -132,16 +128,12 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			for(FigureGraphic f : env.getFigures())
 				f.setTransparent(false);
 			break;
-		case DRAW_CIRCLE:
-		case DRAW_TRIANGLE:
-		case DRAW_POLYGON:
-		case DRAW_RECTANGLE:
+		default:
 			if(buildingFigure!=null) {
 				boolean canBeFinished = buildingFigure.canBeFinishedWithMouse();
 				buildingFigure.onReleasePoint(e.getX(), e.getY());
 				if(canBeFinished) finishBuildingFigure();
 			}
-			break;
 		}
 		canvas.repaint();
 	}
@@ -160,36 +152,18 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 			Point_2D move = amassMove(e.getX(), e.getY());
 			env.moveSelected(move.getX(), move.getY());
 			break;
-		case DRAW_CIRCLE:
-		case DRAW_RECTANGLE:
-		case DRAW_TRIANGLE:
-		case DRAW_POLYGON:
+		default:
 			if(buildingFigure!=null) buildingFigure.onMovePoint(e.getX(), e.getY());
 			else mustRepaint = false;
-			break;
-		default: 
-			mustRepaint = false;
 		}
 		if(mustRepaint) canvas.repaint();
 	}
 
 	public void mouseMoved(MouseEvent e) {
-		Mode mode = canvas.getMode();
-		boolean mustRepaint = true;
 		if (buildingFigure != null) {
-			switch (mode) {
-			case DRAW_CIRCLE:
-			case DRAW_RECTANGLE:
-			case DRAW_TRIANGLE:
-			case DRAW_POLYGON:
-				if(buildingFigure!=null) buildingFigure.onMovePoint(e.getX(), e.getY());
-				else mustRepaint = false;
-				break;
-			default:
-				mustRepaint = false;
-			}
+			buildingFigure.onMovePoint(e.getX(), e.getY());
+			canvas.repaint();
 		}
-		if(mustRepaint) canvas.repaint();
 	}
 
 }

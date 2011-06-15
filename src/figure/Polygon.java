@@ -93,11 +93,8 @@ public class Polygon extends FigureGraphic implements Serializable
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(getBgForCurrentState());
-		if(!isBuilding())
-			g.fillPolygon(xAll, yAll, points.size());
-		g.setColor(getStrokeForCurrentState());
 		if(isBuilding()) {
+			g.setColor(!isConvex() ? Color.red : Color.black);
 			Point_2D last = null, first = null;
 			for(Point_2D p : points) {
 				if(last!=null)
@@ -118,8 +115,69 @@ public class Polygon extends FigureGraphic implements Serializable
 			}
 			
 		}
-		else g.drawPolygon(xAll, yAll, points.size());
+		else {
+			g.setColor(getBgForCurrentState());
+			g.fillPolygon(xAll, yAll, points.size());
+			g.setColor(getStrokeForCurrentState());
+			g.drawPolygon(xAll, yAll, points.size());
+		}
 		afterDraw(g);
+	}
+	
+	public Double angle(Point_2D a, Point_2D b, Point_2D c) {
+		Double t1 = Math.atan2(a.getY()-c.getY(), a.getX()-c.getX());
+		Double t2 = Math.atan2(b.getY()-c.getY(), b.getX()-c.getX());
+		return t2 - t1;
+		
+	}
+	
+	/**
+	 * utilise l'algorithme "la marche de Jarvis"
+	 * @return les points de l'enveloppe convexe du polygone
+	 */
+	public List<Point_2D> enveloppeConvexe() {
+		if(points.size()<=3) return new ArrayList<Point_2D>(points);
+		List<Point_2D> list = new ArrayList<Point_2D>();
+		Double a, bestA;
+		Point_2D endpoint = null, firstpoint = null, pivot = null;
+		Integer minX = null;
+		for(Point_2D p : points) {
+			if(minX==null || p.getX()<minX) {
+				minX = p.getX();
+				pivot = p;
+			}
+		}
+		firstpoint = pivot;
+		int i = 0;
+		do {
+			list.add(pivot);
+			endpoint = points.get(0);
+			for(int j=1; j<points.size(); j++) {
+				a = angle(list.get(i), points.get(j), endpoint);
+				if(endpoint == pivot || 0<a) {
+					endpoint = points.get(j);
+					bestA = a;
+				}
+			}
+			++ i;
+			pivot = endpoint;
+			
+		} while(endpoint == firstpoint);
+		return list;
+	}
+	
+	public boolean isConvex() {
+		if(points.size()<=3) return true;
+		/*Point_2D a = points.get(0), b = points.get(1), c;
+		System.out.println("---");
+		for(int i = 2; i<points.size(); ++i) {
+			c = points.get(i);
+			Double angle = angle(a, c, b);
+			System.out.println(""+angle);
+			a = b; b = c;
+		}*/
+		System.out.println(enveloppeConvexe().size()+" "+points.size());
+		return enveloppeConvexe().size() == points.size();
 	}
 
 	public boolean contain(Point_2D p) {
