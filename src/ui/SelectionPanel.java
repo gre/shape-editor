@@ -19,14 +19,18 @@ import javax.swing.*;
 
 import figure.FigureGraphic;
 
+/**
+ * Panneau de type accordéon qui affichent les détails sur les figures actuellement sélectionnées 
+ * avec la possibilité d'éditer ces figures.
+ */
 @SuppressWarnings("serial")
-public class ToolOptions extends JScrollPane {
+public class SelectionPanel extends JScrollPane {
 	protected Window window;
 	protected Env env;
 	protected JPanel panel;
 	protected List<FigureObj> objs;
 	
-	public ToolOptions(Window window, Env env) {
+	public SelectionPanel(Window window, Env env) {
 		this.window = window;
 		this.env = env;
 		setViewportView(panel = new JPanel());
@@ -49,7 +53,7 @@ public class ToolOptions extends JScrollPane {
 		title.setFont(font.deriveFont(font.getStyle() ^ Font.BOLD));
 		panel.add(title, constraints);
 		int y = 1;
-		objs = new ArrayList<ToolOptions.FigureObj>();
+		objs = new ArrayList<SelectionPanel.FigureObj>();
 		for(FigureGraphic figure : env.getSelected()) {
 			constraints.gridy = y;
 			FigureObj obj = new FigureObj(this, figure);
@@ -72,7 +76,7 @@ public class ToolOptions extends JScrollPane {
 	}
 	
 	public class FigureObj extends JPanel {
-		public ToolOptions parent;
+		public SelectionPanel parent;
 		public FigureGraphic figure;
 		public JButton button;
 		public JPanel options;
@@ -85,7 +89,7 @@ public class ToolOptions extends JScrollPane {
 			parent.closeAll();
 			setOpened(true);
 		}
-		public FigureObj(final ToolOptions parent, final FigureGraphic figure) {
+		public FigureObj(final SelectionPanel parent, final FigureGraphic figure) {
 			this.parent = parent;
 			this.figure = figure;
 			setLayout(new BorderLayout());

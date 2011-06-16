@@ -7,6 +7,9 @@ import java.io.File;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
+/**
+ * Barre de menu
+ */
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 

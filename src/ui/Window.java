@@ -5,13 +5,16 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
+/**
+ * La fenêtre de l'application
+ */
 @SuppressWarnings("serial")
 public class Window extends JFrame {
 	
 	private CanvasArea canvas;
 	private MenuBar menu;
 	public ToolBox toolbox;
-	public ToolOptions tooloptions;
+	public SelectionPanel selectionPanel;
 	
 	private Env env = new Env(this);
 	
@@ -34,13 +37,13 @@ public class Window extends JFrame {
 
 		menu = new MenuBar(this, env);
 		toolbox = new ToolBox(this, env);
-		tooloptions = new ToolOptions(this, env);
+		selectionPanel = new SelectionPanel(this, env);
 		canvas = new CanvasArea(env);
 		CanvasMouseListener cml = new CanvasMouseListener(canvas, env);
 		CanvasKeyListener ckl = new CanvasKeyListener(canvas, env);
 		
 		env.setToolbox(toolbox);
-		env.setToolOptions(tooloptions);
+		env.setSelectionPanel(selectionPanel);
 		env.setCanvas(canvas);
 		env.setCanvasMouseListener(cml);
 		
@@ -59,7 +62,7 @@ public class Window extends JFrame {
 
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-		pane.add(tooloptions, constraints);
+		pane.add(selectionPanel, constraints);
 
 		constraints.gridx = 1;
 		constraints.gridy = 0;

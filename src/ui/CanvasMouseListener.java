@@ -9,6 +9,9 @@ import ui.Mode;
 
 import figure.*;
 
+/**
+ * Ecoute les événements de la souris sur la zone de dessin
+ */
 public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
 	boolean mouseIsDown = false;

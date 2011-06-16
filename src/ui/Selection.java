@@ -7,6 +7,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+/**
+ * Représente une zone de sélection rectangulaire sur le canvas.
+ */
 public class Selection
 {
 	final static float dash1[] = {4.0f};

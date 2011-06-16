@@ -5,6 +5,9 @@ import java.awt.event.KeyEvent;
 
 import figure.FigureGraphic;
 
+/**
+ * Ecoute les événements du clavier sur la zone de dessin
+ */
 public class CanvasKeyListener extends KeyAdapter {
 
 	public CanvasArea canvas;

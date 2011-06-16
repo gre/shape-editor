@@ -12,6 +12,9 @@ import java.util.List;
 
 import figure.*;
 
+/**
+ * Variable d'environnement qui contient tous le contexte du dessin actuel
+ */
 public class Env {
 	
 	protected Data data = new Data();
@@ -22,7 +25,7 @@ public class Env {
 	protected CanvasMouseListener canvasMouseListener;
 	
 	protected ToolBox toolbox;
-	protected ToolOptions toolOptions;
+	protected SelectionPanel selectionPanel;
 
 	protected Color bg = new Color(150, 150, 250);
 	protected Color stroke = Color.BLACK;
@@ -80,11 +83,11 @@ public class Env {
 	public ToolBox getToolbox() {
 		return toolbox;
 	}	
-	public void setToolOptions(ToolOptions t) {
-		toolOptions = t;
+	public void setSelectionPanel(SelectionPanel t) {
+		selectionPanel = t;
 	}
-	public ToolOptions getToolOptions() {
-		return toolOptions;
+	public SelectionPanel getSelectionPanel() {
+		return selectionPanel;
 	}
 
 	public List<FigureGraphic> getFigures() {
@@ -154,7 +157,7 @@ public class Env {
 		List<FigureGraphic> s = new ArrayList<FigureGraphic>( getSelected() );
 		if(!listsAreSame(s, lastSelection)) {
 			canvas.repaint();
-			toolOptions.onSelectionChanged();
+			selectionPanel.onSelectionChanged();
 		}
 		lastSelection = s;
 	}

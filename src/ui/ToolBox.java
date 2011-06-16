@@ -16,6 +16,9 @@ import javax.swing.*;
 
 import ui.Mode;
 
+/**
+ * Boite à outils qui regroupe les boutons des différents modes de l'application ainsi que les choix de couleurs
+ */
 @SuppressWarnings("serial")
 public class ToolBox extends JPanel {
 	

@@ -12,6 +12,9 @@ import java.util.List;
 
 import figure.*;
 
+/**
+ * La zone de dessin
+ */
 @SuppressWarnings("serial")
 public class CanvasArea extends Canvas {
 	protected Env env;
