@@ -29,9 +29,8 @@ public class Point_2D implements Serializable
 		y = p.y;
 	}
 
-	/**
-	 * Accesseurs
-	 */
+	// Accesseurs
+	 
 	public int getX () { return x; }
 	public int getY () { return y; }
 	public void setX (int val) { x = val; }

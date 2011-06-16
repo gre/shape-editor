@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import figure.FigureGraphic;
 
 /**
- * Ecoute les ŽvŽnements du clavier sur la zone de dessin
+ * Ecoute les ï¿½vï¿½nements du clavier sur la zone de dessin
  */
 public class CanvasKeyListener extends KeyAdapter {
 
@@ -47,7 +47,6 @@ public class CanvasKeyListener extends KeyAdapter {
 				env.selectAll();
 			return;
 		}
-		// System.out.print(e.getKeyCode());
 	}
 	
 }

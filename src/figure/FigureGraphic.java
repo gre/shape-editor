@@ -167,11 +167,11 @@ public abstract class FigureGraphic implements Figure, Serializable
 	*/
 	public abstract void onFigureFinish();
 	/**
-	* When figure is in construction mode, perfom a certain task when click
+	* When figure is in construction mode, perform a certain task when click
 	*/
 	public abstract void onPressPoint(int x, int y);
 	/**
-	* When figure is in construction mode, perfom a certain task when click release
+	* When figure is in construction mode, perform a certain task when click release
 	*/
 	public abstract void onReleasePoint(int x, int y);
 	/**
