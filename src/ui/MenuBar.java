@@ -43,16 +43,16 @@ public class MenuBar extends JMenuBar {
 		add(file);
 	}
 	
-	public void open(File f) {
+	protected void open(File f) {
 		if(parent.confirm("Abandonner le travail actuel ?") )
 			openedFile = env.openFromFile(f) ? f : null;
 	}
 
-	public void save(File f) {
+	protected void save(File f) {
 		openedFile = env.saveToFile(f) ? f : null;
 	}
 	
-	class ShapeEditorFileFilter extends FileFilter {
+	protected class ShapeEditorFileFilter extends FileFilter {
 		public String getDescription() {
 			return "Shape Editor File (.sef)";
 		}
@@ -61,7 +61,7 @@ public class MenuBar extends JMenuBar {
 		}
 	}
 	
-	class OpenFileListener implements ActionListener {
+	protected class OpenFileListener implements ActionListener {
 		
 		MenuBar menu;
 		public OpenFileListener(MenuBar menu) {
@@ -83,7 +83,7 @@ public class MenuBar extends JMenuBar {
 		}
 	}
 	
-	class SaveFileListener implements ActionListener {
+	protected class SaveFileListener implements ActionListener {
 
 		MenuBar menu;
 		boolean saveAs;

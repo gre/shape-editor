@@ -75,17 +75,28 @@ public class Window extends JFrame {
 	}
 	
 	/**
-	 * Pose une question √† l'utilisateur de type Oui/Non √† travers une popup 
+	 * Pose une question à l'utilisateur de type Oui/Non à travers une popup 
 	 * @param message : la question
-	 * @return la r√©ponse bool√©enne
+	 * @param title : un titre
+	 * @return la réponse booléenne
 	 */
 	public boolean confirm(String message, String title) {
 		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	}
+	
+	/**
+	 * Pose une question à l'utilisateur de type Oui/Non à travers une popup 
+	 * @param message : la question
+	 * @return la réponse booléenne
+	 */
 	public boolean confirm(String message) {
 		return confirm(message, null);
 	}
-
+	
+	/**
+	 * Affiche un message d'erreur dans une popup
+	 * @param message : le message
+	 */
 	public void error(String message) {
 		JOptionPane.showConfirmDialog(this, message, null, JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
 	}

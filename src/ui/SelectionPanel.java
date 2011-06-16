@@ -38,6 +38,9 @@ public class SelectionPanel extends JScrollPane {
 		onSelectionChanged();
 	}
 	
+	/**
+	 * Fonction appelée quand la sélection a changé
+	 */
 	public void onSelectionChanged() {
 		panel.setVisible(false);
 		panel.removeAll();

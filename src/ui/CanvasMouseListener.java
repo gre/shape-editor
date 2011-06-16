@@ -26,16 +26,26 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		this.env = env;
 	}
 	
+	/**
+	 * @return la figure en cours de construction
+	 */
 	public FigureGraphic getBuildingFigure() {
 		return buildingFigure;
 	}
 	
+	/**
+	 * Termine la figure actuelle
+	 */
 	public void finishBuildingFigure() {
 		buildingFigure.setBuilding(false);
 		buildingFigure.onFigureFinish();
 		buildingFigure = null;
 	}
 	
+	/**
+	 * Fonction appelée quand le mode a changé
+	 * @param mode
+	 */
 	public void onToolChanged(Mode mode) {
 		if(buildingFigure==null) return;
 		env.getFigures().remove(buildingFigure);

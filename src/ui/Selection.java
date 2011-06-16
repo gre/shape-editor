@@ -31,6 +31,10 @@ public class Selection
 		this(colorStroke, colorBackground, Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.abs(a.getX()-b.getX()), Math.abs(a.getY()-b.getY()));
 	}
 	
+	/**
+	 * Dessine la sélection
+	 * @param g
+	 */
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g.setColor(bg);

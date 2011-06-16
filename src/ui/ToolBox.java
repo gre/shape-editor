@@ -35,10 +35,10 @@ public class ToolBox extends JPanel {
 	protected JLabel bgLabel = new JLabel("fond");
 	protected JLabel strokeLabel = new JLabel("contour");
 	
-	Env env;
-	Window window;
+	protected Env env;
+	protected Window window;
 	
-	public JButton addImageButton(JButton b) {
+	private JButton addImageButton(JButton b) {
 		Dimension d = new Dimension(36, 36);
 		b.setPreferredSize(d);
 		b.setMinimumSize(d);
