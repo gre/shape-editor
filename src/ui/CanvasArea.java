@@ -14,26 +14,24 @@ import figure.*;
 
 @SuppressWarnings("serial")
 public class CanvasArea extends Canvas {
-	Env env;
-	Mode mode = Mode.MOVE;
-	Selection selection = null;
-	
-	public enum Mode {
-		MOVE, SELECT, DRAW_CIRCLE, DRAW_TRIANGLE, DRAW_RECTANGLE, DRAW_POLYGON;
-		public Class<? extends FigureGraphic> getDrawClass() {
-			switch(this) {
-			case DRAW_CIRCLE: return Circle.class;
-			case DRAW_TRIANGLE: return Triangle.class;
-			case DRAW_RECTANGLE: return Rectangle.class;
-			case DRAW_POLYGON: return Polygon.class;
-			}
-			return null;
-		}
-	}
+	protected Env env;
+	private Mode mode = Mode.MOVE;
+	protected Selection selection = null;
 	
 	public CanvasArea(Env env) {
 		this.env = env;
 		setBackground(Color.white);
+	}
+	
+	public void setMode(Mode m) {
+		this.mode = m;
+	}
+	public Mode getMode() {
+		return this.mode;
+	}
+
+	public void setSelection(Selection s) {
+		selection = s;
 	}
 	
 	@Override
@@ -48,20 +46,10 @@ public class CanvasArea extends Canvas {
 			selection.draw(g);
 	}
 	
-	public void setMode(Mode m) {
-		this.mode = m;
-	}
-	public Mode getMode() {
-		return this.mode;
-	}
-
-	public void setSelection(Selection s) {
-		selection = s;
-	}
-	
 	/**
 	 * Double buffering implementation
 	 */
+	@Override
 	public void update(Graphics g) {
 		Graphics offgc;
 		Image offscreen = null;

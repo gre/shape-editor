@@ -10,11 +10,11 @@ import javax.swing.filechooser.FileFilter;
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 
-	public File openedFile = null;
-	public JFrame parent;
-	public Env env;
+	protected File openedFile = null;
+	protected Window parent;
+	protected Env env;
 	
-	public MenuBar(JFrame parent, final Env env) {
+	public MenuBar(final Window parent, final Env env) {
 		this.parent = parent;
 		this.env = env;
 		JMenu file = new JMenu("Fichier");
@@ -24,6 +24,8 @@ public class MenuBar extends JMenuBar {
 		JMenuItem saveAs = new JMenuItem("Sauvegarder sous");
 		nouveau.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(!parent.confirm("Abandonner le travail actuel ?") )
+					return;
 				env.empty();
 				env.canvas.repaint();
 			}
@@ -39,7 +41,8 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	public void open(File f) {
-		openedFile = env.openFromFile(f) ? f : null;
+		if(parent.confirm("Abandonner le travail actuel ?") )
+			openedFile = env.openFromFile(f) ? f : null;
 	}
 
 	public void save(File f) {

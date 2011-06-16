@@ -21,10 +21,10 @@ import figure.FigureGraphic;
 
 @SuppressWarnings("serial")
 public class ToolOptions extends JScrollPane {
-	Window window;
-	Env env;
-	JPanel panel;
-	List<FigureObj> objs;
+	protected Window window;
+	protected Env env;
+	protected JPanel panel;
+	protected List<FigureObj> objs;
 	
 	public ToolOptions(Window window, Env env) {
 		this.window = window;

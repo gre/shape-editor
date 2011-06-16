@@ -14,11 +14,6 @@ public class Rectangle extends FigureGraphic implements Serializable
 {
 	private static long nbOfRectangles = 0;
 	
-	/*
-	protected Point_2D topleft;
-	protected int width,height;
-	*/
-	
 	protected Point_2D a, b;
 	
 	public Rectangle(String name) {

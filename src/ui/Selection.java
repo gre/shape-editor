@@ -12,7 +12,7 @@ public class Selection
 	final static float dash1[] = {4.0f};
 	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 4.0f, dash1, 0.0f);
 	
-	public Color bg, stroke;
+	protected Color bg, stroke;
 	protected Point_2D topleft;
 	protected int width,height;
 

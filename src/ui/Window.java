@@ -22,11 +22,11 @@ public class Window extends JFrame {
 		setTitle("Shape Editor");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
-		    public void windowClosing(WindowEvent e) {
-		        if(confirm("Quitter et abandonner ce dessin ?"))
-		            System.exit(0);
-		    }
-        });
+			public void windowClosing(WindowEvent e) {
+				if(confirm("Quitter et abandonner ce dessin ?"))
+					System.exit(0);
+			}
+		});
 		
 		Container pane = getContentPane();
 		pane.setLayout(new GridBagLayout());
@@ -76,12 +76,12 @@ public class Window extends JFrame {
 	 * @param message : la question
 	 * @return la réponse booléenne
 	 */
-    public boolean confirm(String message, String title) {
-        return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-    }
-    public boolean confirm(String message) {
-        return confirm(message, null);
-    }
+	public boolean confirm(String message, String title) {
+		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	}
+	public boolean confirm(String message) {
+		return confirm(message, null);
+	}
 
 	public void error(String message) {
 		JOptionPane.showConfirmDialog(this, message, null, JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);

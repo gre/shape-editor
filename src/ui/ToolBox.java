@@ -14,7 +14,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-import ui.CanvasArea.Mode;
+import ui.Mode;
 
 @SuppressWarnings("serial")
 public class ToolBox extends JPanel {
@@ -25,12 +25,12 @@ public class ToolBox extends JPanel {
 	public JButton newTriangle = new JButton(new ImageIcon("triangle.png"));
 	public JButton newRectangle = new JButton(new ImageIcon("rectangle.png"));
 	public JButton newPolygon = new JButton(new ImageIcon("polygon.png"));
-	List<JButton> buttons = new ArrayList<JButton>();
+	protected List<JButton> buttons = new ArrayList<JButton>();
 
-	public Canvas bgColor = new Canvas();
-	public Canvas strokeColor = new Canvas();
-	public JLabel bgLabel = new JLabel("fond");
-	public JLabel strokeLabel = new JLabel("contour");
+	protected Canvas bgColor = new Canvas();
+	protected Canvas strokeColor = new Canvas();
+	protected JLabel bgLabel = new JLabel("fond");
+	protected JLabel strokeLabel = new JLabel("contour");
 	
 	Env env;
 	Window window;

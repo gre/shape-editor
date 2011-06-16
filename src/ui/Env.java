@@ -20,32 +20,13 @@ public class Env {
 	
 	protected CanvasArea canvas;
 	protected CanvasMouseListener canvasMouseListener;
-	public CanvasMouseListener getCanvasMouseListener() {
-		return canvasMouseListener;
-	}
-	public void setCanvasMouseListener(CanvasMouseListener canvasMouseListener) {
-		this.canvasMouseListener = canvasMouseListener;
-	}
-
+	
 	protected ToolBox toolbox;
 	protected ToolOptions toolOptions;
 
 	protected Color bg = new Color(150, 150, 250);
 	protected Color stroke = Color.BLACK;
 
-	public Color getBackgroundColor() {
-		return bg;
-	}
-	public Color getStrokeColor() {
-		return stroke;
-	}
-	public void setBackgroundColor(Color c) {
-		bg = c;
-	}
-	public void setStrokeColor(Color c) {
-		stroke = c;
-	}
-	
 	/**
 	 * Exportable data
 	 */
@@ -59,47 +40,28 @@ public class Env {
 	
 	public Env(Window window) {
 		this.window = window;
-		/*
-		data.figures.add(new Circle("cercle", Color.BLUE, new Color(70,100,255), 100, 100, 50));
-		data.figures.add(new Circle("hello", Color.BLACK, Color.RED, 200, 300, 100));
-		data.figures.add(new Rectangle("recta", Color.BLACK, Color.YELLOW, 150, 150, 100,100));
-		Polygon p = new Polygon("polyg", Color.BLACK, Color.GREEN);
-		p.addPoint(0, 0);
-		p.addPoint(100, 0);
-		p.addPoint(200, 100);
-		p.addPoint(100, 200);
-		p.move(200, 200);
-		data.figures.add(p);
-		data.figures.add(new Triangle("triangle", Color.blue, Color.LIGHT_GRAY, 100, 100, 150, 200, 200, 100));
-		*/
-	}
-
-	public void sortFigures() {
-		List<FigureGraphic> newfigures = new ArrayList<FigureGraphic>();
-		for(FigureGraphic f : data.figures)
-			if(f.isSelected())
-				newfigures.add(f);
-		for(FigureGraphic f : data.figures)
-			if(!f.isSelected())
-				newfigures.add(f);
-		data.figures = newfigures;
 	}
 	
-	public List<FigureGraphic> getFigures() {
-		return data.figures;
+	public CanvasMouseListener getCanvasMouseListener() {
+		return canvasMouseListener;
+	}
+	public void setCanvasMouseListener(CanvasMouseListener canvasMouseListener) {
+		this.canvasMouseListener = canvasMouseListener;
 	}
 	
-	public FigureGraphic getFirstFigureByName(String name) {
-		for(FigureGraphic f : getFigures())
-			if(name.equals(f.getName()))
-				return f;
-		return null;
+	public Color getBackgroundColor() {
+		return bg;
 	}
-
-	public void setFigures(List<FigureGraphic> figures) {
-		data.figures = figures;
+	public Color getStrokeColor() {
+		return stroke;
 	}
-
+	public void setBackgroundColor(Color c) {
+		bg = c;
+	}
+	public void setStrokeColor(Color c) {
+		stroke = c;
+	}
+	
 	public void setData(Data d) {
 		data = d;
 		canvas.repaint();
@@ -124,6 +86,33 @@ public class Env {
 	public ToolOptions getToolOptions() {
 		return toolOptions;
 	}
+
+	public List<FigureGraphic> getFigures() {
+		return data.figures;
+	}
+	
+	public void sortFigures() {
+		List<FigureGraphic> newfigures = new ArrayList<FigureGraphic>();
+		for(FigureGraphic f : data.figures)
+			if(f.isSelected())
+				newfigures.add(f);
+		for(FigureGraphic f : data.figures)
+			if(!f.isSelected())
+				newfigures.add(f);
+		data.figures = newfigures;
+	}
+	
+	public FigureGraphic getFirstFigureByName(String name) {
+		for(FigureGraphic f : getFigures())
+			if(name.equals(f.getName()))
+				return f;
+		return null;
+	}
+
+	public void setFigures(List<FigureGraphic> figures) {
+		data.figures = figures;
+	}
+
 	
 	public boolean saveToFile(File f) {
 		try {
