@@ -26,10 +26,20 @@ public class Polygon extends FigureGraphic implements Serializable
 		super(name);
 		++nbOfPolygons;
 	}
+	
+	/**
+	* Constructor that will generate by itself the name
+	*/
 	public Polygon() {
 		this("poly_"+(nbOfPolygons+1));
 	}
 	
+	/**
+	* Constructor
+	* @param String name
+	* @param Color stroke
+	* @param Color bg background color
+	*/
 	public Polygon(String name, Color stroke, Color bg) {
 		this(name);
 		setColors(stroke, bg);
@@ -66,6 +76,10 @@ public class Polygon extends FigureGraphic implements Serializable
 		points.add(new Point_2D(x,y));
 		updateXYAll();
 	}
+	
+	/**
+	* Change last added point
+	*/
 	public void editLastPoint(Point_2D p) {
 		int size = points.size();
 		if(size==0) {
@@ -76,6 +90,9 @@ public class Polygon extends FigureGraphic implements Serializable
 		}
 		updateXYAll();
 	}
+	/**
+	* Change last added point
+	*/
 	public void editLastPoint(int x, int y) {
 		editLastPoint(new Point_2D(x, y));
 	}

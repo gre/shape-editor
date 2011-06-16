@@ -3,6 +3,9 @@ package figure;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
+/**
+* A point on the x,y axis
+*/
 public class Point_2D implements Serializable
 {
 	protected int x;

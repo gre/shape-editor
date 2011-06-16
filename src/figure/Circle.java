@@ -22,10 +22,22 @@ public class Circle extends FigureGraphic implements Serializable
 		++nbOfCircles;
 	}
 	
+	/**
+	* Constructor that will generate by itself the name
+	*/
 	public Circle() {
 		this("circle_"+(nbOfCircles+1));
 	}
 	
+	/**
+	* Constructor
+	* @param String name
+	* @param Color stroke
+	* @param Color bg background color
+	* @param int x position
+	* @param int y position
+	* @param int radius of the cercle
+	*/
     public Circle(String name, Color stroke, Color bg, int x, int y, int radius) {
 		super(name);
 		setColors(stroke, bg);
@@ -33,12 +45,6 @@ public class Circle extends FigureGraphic implements Serializable
 		setCenter(x, y);
     }
 
-	/**
-     * Create by first click
-     * @param env
-     * @param x
-     * @param y
-     */
     public void init(Env env, int x, int y) {
         setColors(env);
         setCenter(x, y);

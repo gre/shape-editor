@@ -21,10 +21,23 @@ public class Rectangle extends FigureGraphic implements Serializable
 		++nbOfRectangles;
 	}
 	
+	/**
+	* Constructor that will generate by itself the name
+	*/
 	public Rectangle() {
 		this("rect_"+(nbOfRectangles+1));
 	}
 
+	/**
+	* Constructor
+	* @param String name
+	* @param Color stroke
+	* @param Color bg background color
+	* @param int x position
+	* @param int y position
+	* @param int w width
+	* @param int h height
+	*/
     public Rectangle(String name, Color stroke, Color bg, int x, int y, int w, int h) {
 		this(name);
 		setColors(stroke, bg);
