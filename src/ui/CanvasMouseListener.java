@@ -61,6 +61,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		case MOVE:
 		case SELECT:
 			env.selectOneByPosition(new Point_2D(e.getX(), e.getY()));
+			env.getToolbox().move.doClick();
 			canvas.repaint();
 		}
 	}
@@ -72,7 +73,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		Mode mode = canvas.getMode();
 		canvas.setSelection(null);
 		FigureGraphic figure = null;
-		if(mode==Mode.MOVE || mode==Mode.SELECT) {
+		if(mode==Mode.MOVE) {
 			figure = env.getOneByPosition(new Point_2D(e.getX(), e.getY()));
 			if(figure!=null && !figure.isSelected()) env.selectFigure(figure);
 		}
@@ -103,9 +104,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 					env.addFigure(buildingFigure);
 					env.onSelectionChanged();
 				}
-				catch (Exception exception) {
-					exception.printStackTrace();
-				}
+				catch (Exception exception) {}
 			}
 		}
 		canvas.repaint();

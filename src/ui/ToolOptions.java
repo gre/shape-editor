@@ -3,6 +3,7 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -30,6 +31,7 @@ public class ToolOptions extends JScrollPane {
 		this.env = env;
 		setViewportView(panel = new JPanel());
 		panel.setLayout(new GridBagLayout());
+		onSelectionChanged();
 	}
 	
 	public void onSelectionChanged() {
@@ -42,7 +44,11 @@ public class ToolOptions extends JScrollPane {
 		constraints.gridy = 0;
 		constraints.weightx = 1;
 		constraints.weighty = 1;
-		int y = 0;
+		JLabel title = new JLabel("Figure(s) sélectionnée(s)");
+		Font font = title.getFont();
+		title.setFont(font.deriveFont(font.getStyle() ^ Font.BOLD));
+		panel.add(title, constraints);
+		int y = 1;
 		objs = new ArrayList<ToolOptions.FigureObj>();
 		for(FigureGraphic figure : env.getSelected()) {
 			constraints.gridy = y;
@@ -95,6 +101,7 @@ public class ToolOptions extends JScrollPane {
 			GridBagConstraints constraints = new GridBagConstraints();
 			constraints.fill = GridBagConstraints.HORIZONTAL;
 			constraints.anchor = GridBagConstraints.NORTH;
+			constraints.gridwidth = 1;
 			constraints.gridx = 0;
 			constraints.gridy = 0;
 			

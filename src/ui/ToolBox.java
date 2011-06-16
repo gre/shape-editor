@@ -37,20 +37,19 @@ public class ToolBox extends JPanel {
 	
 	public JButton addImageButton(JButton b) {
 		Dimension d = new Dimension(36, 36);
-	    b.setPreferredSize(d);
-        b.setMinimumSize(d);
-        b.setMaximumSize(d);
+		b.setPreferredSize(d);
+		b.setMinimumSize(d);
+		b.setMaximumSize(d);
 		buttons.add(b);
 		return b;
 	}
-	public void select(JButton button) {
+	private void select(JButton button) {
 		for(JButton b : buttons) {
-            b.setSelected(false);
-            b.setBackground(null);
+			b.setSelected(false);
+			b.setBackground(null);
 		}
-		// Soit disant le java c'est portable :
-		button.setSelected(true); // Marche bien sur mac mais pas du tout sur linux!
-        button.setBackground(Color.white); // Marche bien sur linux, pas du tout sur mac!
+		button.setSelected(true);
+		button.setBackground(Color.white);
 	}
 	
 	public ToolBox(Window window, Env env) {
@@ -79,9 +78,9 @@ public class ToolBox extends JPanel {
 		panel.add(addImageButton(newPolygon));
 		add(panel, c);
 		
-        c.gridy++;
-        c.anchor = GridBagConstraints.CENTER;
-        
+		c.gridy++;
+		c.anchor = GridBagConstraints.CENTER;
+		
 		panel = new JPanel();
 		panel.add(strokeColor);
 		panel.add(strokeLabel);

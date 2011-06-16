@@ -22,6 +22,7 @@ public class CanvasKeyListener extends KeyAdapter {
 		case 10: // ENTER
 			figure = cml.getBuildingFigure();
 			if(figure!=null && figure.canBeFinishedWithKey()) cml.finishBuildingFigure();
+			canvas.repaint();
 			return;
 		case 27: // ESCAPE
 			figure = cml.getBuildingFigure();
@@ -29,6 +30,7 @@ public class CanvasKeyListener extends KeyAdapter {
 				cml.finishBuildingFigure();
 				env.remove(figure);
 			}
+			canvas.repaint();
 			return;
 		case 127: // DELETE
 			env.removeSelected();
