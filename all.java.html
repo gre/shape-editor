@@ -1,0 +1,2253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>~/shape-editor/all.java.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="java">
+<meta name="settings" content="use_css">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.Error { color: #ffffff; background-color: #ff6060; }
+.Identifier { color: #008080; }
+.Statement { color: #804000; }
+.Constant { color: #c00000; }
+.Type { color: #008000; }
+.Special { color: #c000c0; }
+.PreProc { color: #c000c0; }
+.Comment { color: #0000c0; }
+-->
+</style>
+</head>
+<body>
+<pre>
+
+<span class="Comment">// src/ui/Selection.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> figure.Point_2D;
+
+<span class="PreProc">import</span> java.awt.BasicStroke;
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Graphics;
+<span class="PreProc">import</span> java.awt.Graphics2D;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Represente une zone de selection rectangulaire sur le canvas.</span>
+<span class="Comment"> */</span>
+<span class="Type">public</span> <span class="Type">class</span> Selection
+{
+    <span class="Type">final</span> <span class="Type">static</span> <span class="Type">float</span> dash1[] = {<span class="Constant">4.0f</span>};
+    <span class="Type">final</span> <span class="Type">static</span> BasicStroke dashed = <span class="Statement">new</span> BasicStroke(<span class="Constant">1.0f</span>, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, <span class="Constant">4.0f</span>, dash1, <span class="Constant">0.0f</span>);
+
+    <span class="Type">protected</span> Color bg, stroke;
+    <span class="Type">protected</span> Point_2D topleft;
+    <span class="Type">protected</span> <span class="Type">int</span> width,height;
+
+    <span class="Type">public</span> Selection(Color colorStroke, Color colorBackground, <span class="Type">int</span> x, <span class="Type">int</span> y, <span class="Type">int</span> width, <span class="Type">int</span> height) {
+        <span class="Type">this</span>.bg = colorBackground;
+        <span class="Type">this</span>.stroke = colorStroke;
+        <span class="Type">this</span>.topleft = <span class="Statement">new</span> Point_2D(x, y);
+        <span class="Type">this</span>.width = width;
+        <span class="Type">this</span>.height = height;
+    }
+
+    <span class="Type">public</span> Selection(Color colorStroke, Color colorBackground, Point_2D a, Point_2D b) {
+        <span class="Type">this</span>(colorStroke, colorBackground, Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.abs(a.getX()-b.getX()), Math.abs(a.getY()-b.getY()));
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Dessine la selection</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> g</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g.setColor(bg);
+        g.fillRect(topleft.getX(), topleft.getY(), width, height);
+        g.setColor(stroke);
+        g2d.setStroke(dashed);
+        g.drawRect(topleft.getX(), topleft.getY(), width, height);
+    }
+
+    <span class="Type">public</span> <span class="Type">boolean</span> contain(Point_2D p) {
+        <span class="Statement">if</span> ( topleft.getX() &lt;= p.getX() &amp;&amp; p.getX() &lt;= topleft.getX()+width
+          &amp;&amp; topleft.getY() &lt;= p.getY() &amp;&amp; p.getY() &lt;= topleft.getY()+height) {
+            <span class="Statement">return</span> <span class="Constant">true</span>;
+        }
+        <span class="Statement">return</span> <span class="Constant">false</span>;
+    }
+}
+<span class="Comment">// src/ui/CanvasKeyListener.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> java.awt.event.KeyAdapter;
+<span class="PreProc">import</span> java.awt.event.KeyEvent;
+
+<span class="PreProc">import</span> figure.FigureGraphic;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Ecoute les evenements du clavier sur la zone de dessin</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> CanvasKeyListener <span class="Type">extends</span> KeyAdapter {
+
+    <span class="Type">public</span> CanvasArea canvas;
+    <span class="Type">public</span> Env env;
+
+    <span class="Type">public</span> CanvasKeyListener(CanvasArea canvas, Env env) {
+        <span class="Type">this</span>.canvas = canvas;
+        <span class="Type">this</span>.env = env;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> keyReleased(KeyEvent e) {
+        FigureGraphic figure;
+        CanvasMouseListener cml = env.getCanvasMouseListener();
+        <span class="Statement">switch</span>(e.getKeyCode()) {
+        <span class="Statement">case</span> <span class="Constant">10</span>: <span class="Comment">// ENTER</span>
+            figure = cml.getBuildingFigure();
+            <span class="Statement">if</span>(figure!=<span class="Constant">null</span> &amp;&amp; figure.canBeFinishedWithKey()) cml.finishBuildingFigure();
+            canvas.repaint();
+            <span class="Statement">return</span>;
+        <span class="Statement">case</span> <span class="Constant">27</span>: <span class="Comment">// ESCAPE</span>
+            figure = cml.getBuildingFigure();
+            <span class="Statement">if</span>(figure !=<span class="Constant">null</span>) {
+                cml.finishBuildingFigure();
+                env.remove(figure);
+            }
+            canvas.repaint();
+            <span class="Statement">return</span>;
+        <span class="Statement">case</span> <span class="Constant">127</span>: <span class="Comment">// DELETE</span>
+            env.removeSelected();
+            <span class="Statement">return</span>;
+        }
+        <span class="Statement">switch</span>(e.getKeyChar()) {
+        <span class="Statement">case</span> <span class="Constant">'a'</span>:
+            <span class="Statement">if</span>(env.getFigures().size() == env.getSelected().size())
+                env.unselectAll();
+            <span class="Statement">else</span>
+                env.selectAll();
+            <span class="Statement">return</span>;
+        }
+    }
+
+}
+
+<span class="Comment">// src/ui/MenuBar.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> java.awt.event.ActionEvent;
+<span class="PreProc">import</span> java.awt.event.ActionListener;
+<span class="PreProc">import</span> java.io.File;
+
+<span class="PreProc">import</span> javax.swing.*;
+<span class="PreProc">import</span> javax.swing.filechooser.FileFilter;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Barre de menu</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Type">public</span> <span class="Type">class</span> MenuBar <span class="Type">extends</span> JMenuBar {
+
+    <span class="Type">protected</span> File openedFile = <span class="Constant">null</span>;
+    <span class="Type">protected</span> Window parent;
+    <span class="Type">protected</span> Env env;
+
+    <span class="Type">public</span> MenuBar(<span class="Type">final</span> Window parent, <span class="Type">final</span> Env env) {
+        <span class="Type">this</span>.parent = parent;
+        <span class="Type">this</span>.env = env;
+        JMenu file = <span class="Statement">new</span> JMenu(<span class="Constant">&quot;Fichier&quot;</span>);
+        JMenuItem nouveau = <span class="Statement">new</span> JMenuItem(<span class="Constant">&quot;Nouveau&quot;</span>);
+        JMenuItem open = <span class="Statement">new</span> JMenuItem(<span class="Constant">&quot;Ouvrir&quot;</span>);
+        JMenuItem save = <span class="Statement">new</span> JMenuItem(<span class="Constant">&quot;Sauvegarder&quot;</span>);
+        JMenuItem saveAs = <span class="Statement">new</span> JMenuItem(<span class="Constant">&quot;Sauvegarder sous&quot;</span>);
+        nouveau.addActionListener(<span class="Statement">new</span> ActionListener() {
+            <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+                <span class="Statement">if</span>(!parent.confirm(<span class="Constant">&quot;Abandonner le travail actuel ?&quot;</span>) )
+                    <span class="Statement">return</span>;
+                env.empty();
+                env.canvas.repaint();
+            }
+        });
+        open.addActionListener(<span class="Statement">new</span> OpenFileListener(<span class="Type">this</span>));
+        save.addActionListener(<span class="Statement">new</span> SaveFileListener(<span class="Type">this</span>, <span class="Constant">false</span>));
+        saveAs.addActionListener(<span class="Statement">new</span> SaveFileListener(<span class="Type">this</span>, <span class="Constant">true</span>));
+        file.add(nouveau);
+        file.add(open);
+        file.add(save);
+        file.add(saveAs);
+        add(file);
+    }
+
+    <span class="Type">protected</span> <span class="Type">void</span> open(File f) {
+        <span class="Statement">if</span>(parent.confirm(<span class="Constant">&quot;Abandonner le travail actuel ?&quot;</span>) )
+            openedFile = env.openFromFile(f) ? f : <span class="Constant">null</span>;
+    }
+
+    <span class="Type">protected</span> <span class="Type">void</span> save(File f) {
+        openedFile = env.saveToFile(f) ? f : <span class="Constant">null</span>;
+    }
+
+    <span class="Type">protected</span> <span class="Type">class</span> ShapeEditorFileFilter <span class="Type">extends</span> FileFilter {
+        <span class="Type">public</span> String getDescription() {
+            <span class="Statement">return</span> <span class="Constant">&quot;Shape Editor File (.sef)&quot;</span>;
+        }
+        <span class="Type">public</span> <span class="Type">boolean</span> accept(File f) {
+            <span class="Statement">return</span> f.isDirectory() || f.getName().endsWith(<span class="Constant">&quot;.sef&quot;</span>);
+        }
+    }
+
+    <span class="Type">protected</span> <span class="Type">class</span> OpenFileListener <span class="Type">implements</span> ActionListener {
+
+        MenuBar menu;
+        <span class="Type">public</span> OpenFileListener(MenuBar menu) {
+            <span class="Type">this</span>.menu = menu;
+        }
+
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">final</span> JFileChooser fc = <span class="Statement">new</span> JFileChooser();
+            fc.setDialogTitle(<span class="Constant">&quot;Ouvrir&quot;</span>);
+            fc.setFileFilter(<span class="Statement">new</span> ShapeEditorFileFilter());
+            fc.addActionListener(<span class="Statement">new</span> ActionListener() {
+                <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+                    <span class="Statement">if</span>(e.getActionCommand().equals(<span class="Constant">&quot;ApproveSelection&quot;</span>)) {
+                        menu.open(fc.getSelectedFile());
+                    }
+                }
+            });
+            fc.showOpenDialog(menu.parent);
+        }
+    }
+
+    <span class="Type">protected</span> <span class="Type">class</span> SaveFileListener <span class="Type">implements</span> ActionListener {
+
+        MenuBar menu;
+        <span class="Type">boolean</span> saveAs;
+        <span class="Type">public</span> SaveFileListener(MenuBar menu, <span class="Type">boolean</span> saveAs) {
+            <span class="Type">this</span>.menu = menu;
+            <span class="Type">this</span>.saveAs = saveAs;
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Statement">if</span>(!saveAs &amp;&amp; menu.openedFile!=<span class="Constant">null</span>) {
+                menu.save(menu.openedFile);
+                <span class="Statement">return</span>;
+            }
+
+            <span class="Type">final</span> JFileChooser fc = <span class="Statement">new</span> JFileChooser();
+            fc.setApproveButtonText(<span class="Constant">&quot;Enregistrer&quot;</span>);
+            fc.setDialogTitle(<span class="Constant">&quot;Enregistrer&quot;</span>);
+            fc.setFileFilter(<span class="Statement">new</span> ShapeEditorFileFilter());
+            fc.addActionListener(<span class="Statement">new</span> ActionListener() {
+                <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+                    <span class="Statement">if</span>(e.getActionCommand().equals(<span class="Constant">&quot;ApproveSelection&quot;</span>)) {
+                        File selected = fc.getSelectedFile();
+                        <span class="Statement">if</span>(!selected.getName().endsWith(<span class="Constant">&quot;.sef&quot;</span>))
+                            selected = <span class="Statement">new</span> File(selected.getAbsolutePath()+<span class="Constant">&quot;.sef&quot;</span>);
+                        menu.save(selected);
+                    }
+                }
+            });
+            fc.showSaveDialog(menu.parent);
+        }
+    }
+}
+
+<span class="Comment">// src/ui/CanvasMouseListener.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.event.MouseEvent;
+<span class="PreProc">import</span> java.awt.event.MouseListener;
+<span class="PreProc">import</span> java.awt.event.MouseMotionListener;
+
+<span class="PreProc">import</span> ui.Mode;
+
+<span class="PreProc">import</span> figure.*;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Ecoute les evenements de la souris sur la zone de dessin</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> CanvasMouseListener <span class="Type">implements</span> MouseListener, MouseMotionListener {
+
+    <span class="Type">boolean</span> mouseIsDown = <span class="Constant">false</span>;
+    Env env;
+    CanvasArea canvas;
+    Point_2D lastPosition;
+
+    FigureGraphic buildingFigure = <span class="Constant">null</span>;
+
+    <span class="Type">public</span> CanvasMouseListener(CanvasArea c, Env env) {
+        <span class="Type">this</span>.canvas = c;
+        <span class="Type">this</span>.env = env;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@return</span><span class="Comment"> la figure en cours de construction</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> FigureGraphic getBuildingFigure() {
+        <span class="Statement">return</span> buildingFigure;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Termine la figure actuelle</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> finishBuildingFigure() {
+        buildingFigure.setBuilding(<span class="Constant">false</span>);
+        buildingFigure.onFigureFinish();
+        buildingFigure = <span class="Constant">null</span>;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Fonction appelee quand le mode a change</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> mode</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> onToolChanged(Mode mode) {
+        <span class="Statement">if</span>(buildingFigure==<span class="Constant">null</span>) <span class="Statement">return</span>;
+        env.getFigures().remove(buildingFigure);
+        finishBuildingFigure();
+        canvas.repaint();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Enregistre une position comme derniere position</span>
+<span class="Comment">     *</span><span class="Special"> et retourne le deplacement associe au dernier enregistrement</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@return</span>
+<span class="Comment">     */</span>
+    <span class="Type">private</span> Point_2D amassMove(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        Point_2D move = <span class="Statement">new</span> Point_2D(<span class="Constant">0</span>, <span class="Constant">0</span>);
+        <span class="Statement">if</span>(lastPosition!=<span class="Constant">null</span>) {
+            move.setX(x - lastPosition.getX());
+            move.setY(y - lastPosition.getY());
+        }
+        lastPosition = <span class="Statement">new</span> Point_2D(x, y);
+        <span class="Statement">return</span> move;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> mouseClicked(MouseEvent e) {
+        Mode mode = canvas.getMode();
+        <span class="Statement">switch</span>(mode) {
+        <span class="Statement">case</span> MOVE:
+        <span class="Statement">case</span> SELECT:
+            env.selectOneByPosition(<span class="Statement">new</span> Point_2D(e.getX(), e.getY()));
+            env.getToolbox().move.doClick();
+            canvas.repaint();
+        }
+    }
+    <span class="Type">public</span> <span class="Type">void</span> mouseEntered(MouseEvent e) {}
+    <span class="Type">public</span> <span class="Type">void</span> mouseExited(MouseEvent e) {}
+
+    <span class="Type">public</span> <span class="Type">void</span> mousePressed(MouseEvent e) {
+        mouseIsDown = <span class="Constant">true</span>;
+        Mode mode = canvas.getMode();
+        canvas.setSelection(<span class="Constant">null</span>);
+        FigureGraphic figure = <span class="Constant">null</span>;
+        <span class="Statement">if</span>(mode==Mode.MOVE) {
+            figure = env.getOneByPosition(<span class="Statement">new</span> Point_2D(e.getX(), e.getY()));
+            <span class="Statement">if</span>(figure!=<span class="Constant">null</span> &amp;&amp; !figure.isSelected()) env.selectFigure(figure);
+        }
+        amassMove(e.getX(), e.getY());
+        <span class="Statement">switch</span>(mode) {
+        <span class="Statement">case</span> MOVE:
+            <span class="Statement">if</span>(figure==<span class="Constant">null</span>) {
+                env.unselectAll();
+                env.getToolbox().select.doClick();
+            }
+            <span class="Statement">for</span>(FigureGraphic f : env.getFigures())
+                <span class="Statement">if</span>(f.isSelected())
+                    f.setTransparent(<span class="Constant">true</span>);
+            <span class="Statement">break</span>;
+<span class="Statement">        </span><span class="Statement">default</span>:
+            <span class="Statement">if</span>(buildingFigure!=<span class="Constant">null</span>) {
+                <span class="Statement">if</span>(buildingFigure.canBeFinishedWithMouse()) {
+                    finishBuildingFigure();
+                }
+                <span class="Statement">else</span> {
+                    buildingFigure.onPressPoint(e.getX(), e.getY());
+                }
+            }
+            <span class="Statement">else</span> {
+                <span class="Statement">try</span> {
+                    buildingFigure = mode.getDrawClass().newInstance();
+                    buildingFigure.init(env, e.getX(), e.getY());
+                    env.addFigure(buildingFigure);
+                    env.onSelectionChanged();
+                }
+                <span class="Statement">catch</span> (Exception exception) {}
+            }
+        }
+        canvas.repaint();
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> mouseReleased(MouseEvent e) {
+        mouseIsDown = <span class="Constant">false</span>;
+        Mode mode = canvas.getMode();
+        canvas.setSelection(<span class="Constant">null</span>);
+        <span class="Statement">switch</span>(mode) {
+        <span class="Statement">case</span> SELECT:
+            <span class="Statement">if</span>(env.countSelected()&gt;<span class="Constant">0</span>)
+                env.getToolbox().move.doClick();
+            <span class="Statement">for</span>(FigureGraphic f : env.getFigures())
+                f.setTransparent(<span class="Constant">false</span>);
+            <span class="Statement">break</span>;
+        <span class="Statement">case</span> MOVE:
+            Point_2D move = amassMove(e.getX(), e.getY());
+            env.moveSelected(move.getX(), move.getY());
+            <span class="Statement">for</span>(FigureGraphic f : env.getFigures())
+                f.setTransparent(<span class="Constant">false</span>);
+            <span class="Statement">break</span>;
+<span class="Statement">        </span><span class="Statement">default</span>:
+            <span class="Statement">if</span>(buildingFigure!=<span class="Constant">null</span>) {
+                <span class="Type">boolean</span> canBeFinished = buildingFigure.canBeFinishedWithMouse();
+                buildingFigure.onReleasePoint(e.getX(), e.getY());
+                <span class="Statement">if</span>(canBeFinished) finishBuildingFigure();
+            }
+        }
+        canvas.repaint();
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> mouseDragged(MouseEvent e) {
+        Mode mode = canvas.getMode();
+        <span class="Type">boolean</span> mustRepaint = <span class="Constant">true</span>;
+        <span class="Statement">if</span>(mode!=Mode.SELECT) canvas.setSelection(<span class="Constant">null</span>);
+        <span class="Statement">switch</span>(mode) {
+        <span class="Statement">case</span> SELECT:
+            Selection s = <span class="Statement">new</span> Selection(<span class="Statement">new</span> Color(<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">150</span>), <span class="Statement">new</span> Color(<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">50</span>), <span class="Statement">new</span> Point_2D(e.getX(), e.getY()), lastPosition);
+            env.selectPoints(s);
+            canvas.setSelection(s);
+            <span class="Statement">break</span>;
+        <span class="Statement">case</span> MOVE:
+            Point_2D move = amassMove(e.getX(), e.getY());
+            env.moveSelected(move.getX(), move.getY());
+            <span class="Statement">break</span>;
+<span class="Statement">        </span><span class="Statement">default</span>:
+            <span class="Statement">if</span>(buildingFigure!=<span class="Constant">null</span>) buildingFigure.onMovePoint(e.getX(), e.getY());
+            <span class="Statement">else</span> mustRepaint = <span class="Constant">false</span>;
+        }
+        <span class="Statement">if</span>(mustRepaint) canvas.repaint();
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> mouseMoved(MouseEvent e) {
+        <span class="Statement">if</span> (buildingFigure != <span class="Constant">null</span>) {
+            buildingFigure.onMovePoint(e.getX(), e.getY());
+            canvas.repaint();
+        }
+    }
+
+}
+
+<span class="Comment">// src/ui/Mode.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> figure.*;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Represente le mode de dessin actuel</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">enum</span> Mode {
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> mode Deplacement</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    MOVE,
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> mode Selection</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    SELECT,
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> mode Cercle</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    DRAW_CIRCLE,
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> mode Triangle</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    DRAW_TRIANGLE,
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> mode Rectangle</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    DRAW_RECTANGLE,
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> mode Polygon</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    DRAW_POLYGON;
+
+    <span class="Type">public</span> Class&lt;? <span class="Type">extends</span> FigureGraphic&gt; getDrawClass() {
+        <span class="Statement">switch</span>(<span class="Type">this</span>) {
+        <span class="Statement">case</span> DRAW_CIRCLE: <span class="Statement">return</span> Circle.<span class="Type">class</span>;
+        <span class="Statement">case</span> DRAW_TRIANGLE: <span class="Statement">return</span> Triangle.<span class="Type">class</span>;
+        <span class="Statement">case</span> DRAW_RECTANGLE: <span class="Statement">return</span> Rectangle.<span class="Type">class</span>;
+        <span class="Statement">case</span> DRAW_POLYGON: <span class="Statement">return</span> Polygon.<span class="Type">class</span>;
+        }
+        <span class="Statement">return</span> <span class="Constant">null</span>;
+    }
+}
+<span class="Comment">// src/ui/Window.java</span>
+<span class="PreProc">package</span> ui;
+<span class="PreProc">import</span> java.awt.*;
+<span class="PreProc">import</span> java.awt.event.WindowAdapter;
+<span class="PreProc">import</span> java.awt.event.WindowEvent;
+
+<span class="PreProc">import</span> javax.swing.*;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> La fenetre de l'application</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Type">public</span> <span class="Type">class</span> Window <span class="Type">extends</span> JFrame {
+
+    <span class="Type">private</span> CanvasArea canvas;
+    <span class="Type">private</span> MenuBar menu;
+    <span class="Type">public</span> ToolBox toolbox;
+    <span class="Type">public</span> SelectionPanel selectionPanel;
+
+    <span class="Type">private</span> Env env = <span class="Statement">new</span> Env(<span class="Type">this</span>);
+
+    <span class="Type">public</span> Window() {
+        setBounds(<span class="Constant">0</span>, <span class="Constant">0</span>, <span class="Constant">800</span>, <span class="Constant">600</span>);
+        setMinimumSize(<span class="Statement">new</span> Dimension(<span class="Constant">400</span>, <span class="Constant">300</span>));
+        setLocationRelativeTo(<span class="Constant">null</span>);
+        setTitle(<span class="Constant">&quot;Shape Editor&quot;</span>);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(<span class="Statement">new</span> WindowAdapter() {
+            <span class="Type">public</span> <span class="Type">void</span> windowClosing(WindowEvent e) {
+                <span class="Statement">if</span>(confirm(<span class="Constant">&quot;Quitter et abandonner ce dessin ?&quot;</span>))
+                    System.exit(<span class="Constant">0</span>);
+            }
+        });
+
+        Container pane = getContentPane();
+        pane.setLayout(<span class="Statement">new</span> GridBagLayout());
+        GridBagConstraints constraints = <span class="Statement">new</span> GridBagConstraints();
+
+        menu = <span class="Statement">new</span> MenuBar(<span class="Type">this</span>, env);
+        toolbox = <span class="Statement">new</span> ToolBox(<span class="Type">this</span>, env);
+        selectionPanel = <span class="Statement">new</span> SelectionPanel(<span class="Type">this</span>, env);
+        canvas = <span class="Statement">new</span> CanvasArea(env);
+        CanvasMouseListener cml = <span class="Statement">new</span> CanvasMouseListener(canvas, env);
+        CanvasKeyListener ckl = <span class="Statement">new</span> CanvasKeyListener(canvas, env);
+
+        env.setToolbox(toolbox);
+        env.setSelectionPanel(selectionPanel);
+        env.setCanvas(canvas);
+        env.setCanvasMouseListener(cml);
+
+        canvas.addMouseListener(cml);
+        canvas.addMouseMotionListener(cml);
+        canvas.addKeyListener(ckl);
+
+        setJMenuBar(menu);
+        constraints.insets = <span class="Statement">new</span> Insets(<span class="Constant">2</span>, <span class="Constant">2</span>, <span class="Constant">2</span>, <span class="Constant">2</span>);
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = <span class="Constant">0</span>;
+        constraints.gridy = <span class="Constant">0</span>;
+        constraints.weightx = <span class="Constant">0</span>;
+        constraints.weighty = <span class="Constant">0</span>;
+        pane.add(toolbox, constraints);
+
+        constraints.gridx = <span class="Constant">0</span>;
+        constraints.gridy = <span class="Constant">1</span>;
+        pane.add(selectionPanel, constraints);
+
+        constraints.gridx = <span class="Constant">1</span>;
+        constraints.gridy = <span class="Constant">0</span>;
+        constraints.gridheight = <span class="Constant">2</span>;
+        constraints.weightx = <span class="Constant">1.0</span>;
+        constraints.weighty = <span class="Constant">1.0</span>;
+        pane.add(canvas, constraints);
+
+        setVisible(<span class="Constant">true</span>);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Pose une question a l'utilisateur de type Oui/Non a travers une popup </span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> message</span><span class="Comment"> : la question</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> title</span><span class="Comment"> : un titre</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> la reponse booleenne</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">boolean</span> confirm(String message, String title) {
+        <span class="Statement">return</span> JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(<span class="Type">this</span>, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Pose une question a l'utilisateur de type Oui/Non a travers une popup </span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> message</span><span class="Comment"> : la question</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> la reponse booleenne</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">boolean</span> confirm(String message) {
+        <span class="Statement">return</span> confirm(message, <span class="Constant">null</span>);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Affiche un message d'erreur dans une popup</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> message</span><span class="Comment"> : le message</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> error(String message) {
+        JOptionPane.showConfirmDialog(<span class="Type">this</span>, message, <span class="Constant">null</span>, JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
+    }
+
+    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">void</span> main(String[] args) {
+        <span class="Statement">new</span> Window();
+    }
+}
+
+<span class="Comment">// src/ui/ToolBox.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> java.awt.Canvas;
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Dimension;
+<span class="PreProc">import</span> java.awt.GridBagConstraints;
+<span class="PreProc">import</span> java.awt.GridBagLayout;
+<span class="PreProc">import</span> java.awt.event.ActionEvent;
+<span class="PreProc">import</span> java.awt.event.ActionListener;
+<span class="PreProc">import</span> java.awt.event.MouseEvent;
+<span class="PreProc">import</span> java.awt.event.MouseListener;
+<span class="PreProc">import</span> java.util.ArrayList;
+<span class="PreProc">import</span> java.util.List;
+
+<span class="PreProc">import</span> javax.swing.*;
+
+<span class="PreProc">import</span> ui.Mode;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Boite a outils qui regroupe les boutons des differents modes de l'application ainsi que les choix de couleurs</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Type">public</span> <span class="Type">class</span> ToolBox <span class="Type">extends</span> JPanel {
+
+    <span class="Type">public</span> JButton select = <span class="Statement">new</span> JButton(<span class="Statement">new</span> ImageIcon(<span class="Constant">&quot;select.png&quot;</span>));
+    <span class="Type">public</span> JButton move = <span class="Statement">new</span> JButton(<span class="Statement">new</span> ImageIcon(<span class="Constant">&quot;move.png&quot;</span>));
+    <span class="Type">public</span> JButton newCircle = <span class="Statement">new</span> JButton(<span class="Statement">new</span> ImageIcon(<span class="Constant">&quot;circle.png&quot;</span>));
+    <span class="Type">public</span> JButton newTriangle = <span class="Statement">new</span> JButton(<span class="Statement">new</span> ImageIcon(<span class="Constant">&quot;triangle.png&quot;</span>));
+    <span class="Type">public</span> JButton newRectangle = <span class="Statement">new</span> JButton(<span class="Statement">new</span> ImageIcon(<span class="Constant">&quot;rectangle.png&quot;</span>));
+    <span class="Type">public</span> JButton newPolygon = <span class="Statement">new</span> JButton(<span class="Statement">new</span> ImageIcon(<span class="Constant">&quot;polygon.png&quot;</span>));
+    <span class="Type">protected</span> List&lt;JButton&gt; buttons = <span class="Statement">new</span> ArrayList&lt;JButton&gt;();
+
+    <span class="Type">protected</span> Canvas bgColor = <span class="Statement">new</span> Canvas();
+    <span class="Type">protected</span> Canvas strokeColor = <span class="Statement">new</span> Canvas();
+    <span class="Type">protected</span> JLabel bgLabel = <span class="Statement">new</span> JLabel(<span class="Constant">&quot;fond&quot;</span>);
+    <span class="Type">protected</span> JLabel strokeLabel = <span class="Statement">new</span> JLabel(<span class="Constant">&quot;contour&quot;</span>);
+
+    <span class="Type">protected</span> Env env;
+    <span class="Type">protected</span> Window window;
+
+    <span class="Type">private</span> JButton addImageButton(JButton b) {
+        Dimension d = <span class="Statement">new</span> Dimension(<span class="Constant">36</span>, <span class="Constant">36</span>);
+        b.setPreferredSize(d);
+        b.setMinimumSize(d);
+        b.setMaximumSize(d);
+        buttons.add(b);
+        <span class="Statement">return</span> b;
+    }
+    <span class="Type">private</span> <span class="Type">void</span> select(JButton button) {
+        <span class="Statement">for</span>(JButton b : buttons) {
+            b.setSelected(<span class="Constant">false</span>);
+            b.setBackground(<span class="Constant">null</span>);
+        }
+        button.setSelected(<span class="Constant">true</span>);
+        button.setBackground(Color.white);
+    }
+
+    <span class="Type">public</span> ToolBox(Window window, Env env) {
+        <span class="Type">this</span>.env = env;
+        <span class="Type">this</span>.window = window;
+        setBorder(BorderFactory.createEtchedBorder());
+        GridBagLayout l = <span class="Statement">new</span> GridBagLayout();
+        GridBagConstraints c = <span class="Statement">new</span> GridBagConstraints();
+        setLayout(l);
+
+        c.gridx = <span class="Constant">0</span>;
+        c.gridy = <span class="Constant">0</span>;
+        c.anchor = GridBagConstraints.WEST;
+
+        JPanel panel = <span class="Statement">new</span> JPanel();
+
+        panel.add(addImageButton(select));
+        panel.add(addImageButton(move));
+
+        add(panel, c);
+        c.gridy++;
+        panel = <span class="Statement">new</span> JPanel();
+        panel.add(addImageButton(newCircle));
+        panel.add(addImageButton(newTriangle));
+        panel.add(addImageButton(newRectangle));
+        panel.add(addImageButton(newPolygon));
+        add(panel, c);
+
+        c.gridy++;
+        c.anchor = GridBagConstraints.CENTER;
+
+        panel = <span class="Statement">new</span> JPanel();
+        panel.add(strokeColor);
+        panel.add(strokeLabel);
+        panel.add(bgColor);
+        panel.add(bgLabel);
+        add(panel, c);
+        bgColor.setSize(<span class="Constant">20</span>, <span class="Constant">20</span>);
+        strokeColor.setSize(<span class="Constant">20</span>, <span class="Constant">20</span>);
+        bgColor.setBackground(env.getBackgroundColor());
+        strokeColor.setBackground(env.getStrokeColor());
+
+        <span class="Type">final</span> Window w = window;
+        <span class="Type">final</span> Env e = env;
+        MouseListener clickBg = <span class="Statement">new</span> MouseListener() {
+            <span class="Type">public</span> <span class="Type">void</span> mouseReleased(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mousePressed(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mouseExited(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mouseEntered(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mouseClicked(MouseEvent arg0) {
+                Color c = JColorChooser.showDialog(w, <span class="Constant">&quot;Couleur de fond&quot;</span>, e.getBackgroundColor());
+                <span class="Statement">if</span>(c==<span class="Constant">null</span>) <span class="Statement">return</span>;
+                e.setBackgroundColor(c);
+                bgColor.setBackground(c);
+            }
+        };
+        bgLabel.addMouseListener(clickBg);
+        bgColor.addMouseListener(clickBg);
+
+        MouseListener clickStroke = <span class="Statement">new</span> MouseListener() {
+            <span class="Type">public</span> <span class="Type">void</span> mouseReleased(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mousePressed(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mouseExited(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mouseEntered(MouseEvent arg0) {}
+            <span class="Type">public</span> <span class="Type">void</span> mouseClicked(MouseEvent arg0) {
+                Color c = JColorChooser.showDialog(w, <span class="Constant">&quot;Couleur de contour&quot;</span>, e.getStrokeColor());
+                <span class="Statement">if</span>(c==<span class="Constant">null</span>) <span class="Statement">return</span>;
+                e.setStrokeColor(c);
+                strokeColor.setBackground(c);
+            }
+        };
+        strokeLabel.addMouseListener(clickStroke);
+        strokeColor.addMouseListener(clickStroke);
+
+        select.addActionListener(<span class="Statement">new</span> SelectListener());
+        move.addActionListener(<span class="Statement">new</span> MoveListener());
+        newCircle.addActionListener(<span class="Statement">new</span> NewCircleListener());
+        newTriangle.addActionListener(<span class="Statement">new</span> NewTriangleListener());
+        newRectangle.addActionListener(<span class="Statement">new</span> NewRectangleListener());
+        newPolygon.addActionListener(<span class="Statement">new</span> NewPolygonListener());
+        select(move);
+    }
+
+    <span class="Type">class</span> SelectListener <span class="Type">extends</span> ButtonListener {
+        <span class="Type">public</span> SelectListener() {
+            <span class="Type">super</span>(Mode.SELECT);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">super</span>.actionPerformed(e);
+        }
+    }
+    <span class="Type">class</span> MoveListener <span class="Type">extends</span> ButtonListener {
+        <span class="Type">public</span> MoveListener() {
+            <span class="Type">super</span>(Mode.MOVE);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">super</span>.actionPerformed(e);
+        }
+    }
+    <span class="Type">class</span> NewCircleListener <span class="Type">extends</span> ButtonListener {
+        <span class="Type">public</span> NewCircleListener() {
+            <span class="Type">super</span>(Mode.DRAW_CIRCLE);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">super</span>.actionPerformed(e);
+        }
+    }
+    <span class="Type">class</span> NewTriangleListener <span class="Type">extends</span> ButtonListener {
+        <span class="Type">public</span> NewTriangleListener() {
+            <span class="Type">super</span>(Mode.DRAW_TRIANGLE);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">super</span>.actionPerformed(e);
+        }
+    }
+    <span class="Type">class</span> NewRectangleListener <span class="Type">extends</span> ButtonListener {
+        <span class="Type">public</span> NewRectangleListener() {
+            <span class="Type">super</span>(Mode.DRAW_RECTANGLE);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">super</span>.actionPerformed(e);
+        }
+    }
+    <span class="Type">class</span> NewPolygonListener <span class="Type">extends</span> ButtonListener {
+        <span class="Type">public</span> NewPolygonListener() {
+            <span class="Type">super</span>(Mode.DRAW_POLYGON);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Type">super</span>.actionPerformed(e);
+        }
+    }
+
+    <span class="Type">class</span> ButtonListener <span class="Type">implements</span> ActionListener {
+        Mode mode;
+        <span class="Type">public</span> ButtonListener(Mode mode) {
+            <span class="Type">this</span>.mode = mode;
+        }
+        <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+            <span class="Statement">if</span>(e.getSource() <span class="Statement">instanceof</span> JButton)
+                select((JButton)e.getSource());
+            env.getCanvas().setMode(mode);
+            env.getCanvasMouseListener().onToolChanged(mode);
+        }
+    }
+}
+
+<span class="Comment">// src/ui/Env.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.io.File;
+<span class="PreProc">import</span> java.io.FileInputStream;
+<span class="PreProc">import</span> java.io.FileOutputStream;
+<span class="PreProc">import</span> java.io.ObjectInputStream;
+<span class="PreProc">import</span> java.io.ObjectOutputStream;
+<span class="PreProc">import</span> java.io.Serializable;
+<span class="PreProc">import</span> java.util.ArrayList;
+<span class="PreProc">import</span> java.util.List;
+
+<span class="PreProc">import</span> figure.*;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Variable d'environnement qui contient tous le contexte du dessin actuel</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> Env {
+
+    <span class="Type">protected</span> Data data = <span class="Statement">new</span> Data();
+
+    <span class="Type">protected</span> Window window;
+
+    <span class="Type">protected</span> CanvasArea canvas;
+    <span class="Type">protected</span> CanvasMouseListener canvasMouseListener;
+
+    <span class="Type">protected</span> ToolBox toolbox;
+    <span class="Type">protected</span> SelectionPanel selectionPanel;
+
+    <span class="Type">protected</span> Color bg = <span class="Statement">new</span> Color(<span class="Constant">150</span>, <span class="Constant">150</span>, <span class="Constant">250</span>);
+    <span class="Type">protected</span> Color stroke = Color.BLACK;
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Exportable data</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+    <span class="Type">protected</span> <span class="Type">static</span> <span class="Type">class</span> Data <span class="Type">implements</span> Serializable {
+        <span class="Comment">/**</span>
+<span class="Comment">         *</span><span class="Special"> La liste des figures est trie dans l'ordre de priorite d'affichage</span>
+<span class="Special">         </span><span class="Comment">*/</span>
+        List&lt;FigureGraphic&gt; figures = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;();
+    }
+
+    <span class="Type">public</span> Env(Window window) {
+        <span class="Type">this</span>.window = window;
+    }
+
+    <span class="Type">public</span> CanvasMouseListener getCanvasMouseListener() {
+        <span class="Statement">return</span> canvasMouseListener;
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setCanvasMouseListener(CanvasMouseListener canvasMouseListener) {
+        <span class="Type">this</span>.canvasMouseListener = canvasMouseListener;
+    }
+
+    <span class="Type">public</span> Color getBackgroundColor() {
+        <span class="Statement">return</span> bg;
+    }
+    <span class="Type">public</span> Color getStrokeColor() {
+        <span class="Statement">return</span> stroke;
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setBackgroundColor(Color c) {
+        bg = c;
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setStrokeColor(Color c) {
+        stroke = c;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setData(Data d) {
+        data = d;
+        canvas.repaint();
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setCanvas(CanvasArea c) {
+        canvas = c;
+    }
+    <span class="Type">public</span> CanvasArea getCanvas() {
+        <span class="Statement">return</span> canvas;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setToolbox(ToolBox t) {
+        toolbox = t;
+    }
+    <span class="Type">public</span> ToolBox getToolbox() {
+        <span class="Statement">return</span> toolbox;
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setSelectionPanel(SelectionPanel t) {
+        selectionPanel = t;
+    }
+    <span class="Type">public</span> SelectionPanel getSelectionPanel() {
+        <span class="Statement">return</span> selectionPanel;
+    }
+
+    <span class="Type">public</span> List&lt;FigureGraphic&gt; getFigures() {
+        <span class="Statement">return</span> data.figures;
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setFigures(List&lt;FigureGraphic&gt; figures) {
+        data.figures = figures;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Trie les figures de telle sorte que les figures selectionnees apparaissent en premier.</span><span class="Comment"> Outre la selection, l'ordre est conserve.</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> sortFigures() {
+        List&lt;FigureGraphic&gt; newfigures = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;();
+        <span class="Statement">for</span>(FigureGraphic f : data.figures)
+            <span class="Statement">if</span>(f.isSelected())
+                newfigures.add(f);
+        <span class="Statement">for</span>(FigureGraphic f : data.figures)
+            <span class="Statement">if</span>(!f.isSelected())
+                newfigures.add(f);
+        data.figures = newfigures;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Sauvegarde le dessin actuel dans un fichier</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> f</span><span class="Comment"> le fichier</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> true si sauvegarde avec succes, false sinon</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">boolean</span> saveToFile(File f) {
+        <span class="Statement">try</span> {
+            ObjectOutputStream oos = <span class="Statement">new</span> ObjectOutputStream(<span class="Statement">new</span> FileOutputStream(f));
+            oos.writeObject(data);
+            <span class="Statement">return</span> <span class="Constant">true</span>;
+        }
+        <span class="Statement">catch</span>(Exception e) {
+            e.printStackTrace();
+            window.error(<span class="Constant">&quot;Impossible de sauvegarder le dessin dans le fichier choisi&quot;</span>);
+        }
+        <span class="Statement">return</span> <span class="Constant">false</span>;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Ouvrir un dessin depuis un fichier</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> f</span><span class="Comment"> le fichier a ouvrir</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> true si ouvert avec succes, false si l'ouverture du dessin a echoue (fichier incompatible, erreur de fichier)</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">boolean</span> openFromFile(File f) {
+        <span class="Statement">try</span> {
+            ObjectInputStream ois = <span class="Statement">new</span> ObjectInputStream(<span class="Statement">new</span> FileInputStream(f));
+            setData((Data) ois.readObject());
+            <span class="Statement">return</span> <span class="Constant">true</span>;
+        } <span class="Statement">catch</span> (Exception e) {
+            e.printStackTrace();
+            window.error(<span class="Constant">&quot;Impossible d'ouvrir le fichier&quot;</span>);
+        }
+        <span class="Statement">return</span> <span class="Constant">false</span>;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Ajoute une figure au dessin</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> addFigure(FigureGraphic f) {
+        getFigures().add(<span class="Constant">0</span>, f);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Reinitialise le dessin (supprime toutes les figures)</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> empty() {
+        data = <span class="Statement">new</span> Data();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> compare deux listes</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> f</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> g</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> true si les deux listes sont egales</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">boolean</span> listsAreSame(List&lt;FigureGraphic&gt; f, List&lt;FigureGraphic&gt; g) {
+        <span class="Statement">return</span> f.size() == g.size() &amp;&amp; f.containsAll(g);
+    }
+
+    <span class="Type">private</span> List&lt;FigureGraphic&gt; lastSelection = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;();
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Fonction appele quand la selection a change</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> onSelectionChanged() {
+        List&lt;FigureGraphic&gt; s = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;( getSelected() );
+        <span class="Statement">if</span>(!listsAreSame(s, lastSelection)) {
+            canvas.repaint();
+            selectionPanel.onSelectionChanged();
+        }
+        lastSelection = s;
+    }
+
+    <span class="Comment">// Selection</span>
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Annule la selection actuelle</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">private</span> <span class="Type">void</span> emptySelection() {
+        <span class="Statement">for</span>(FigureGraphic f : getFigures())
+            setSelected(f, <span class="Constant">false</span>);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> D�selectionne toutes les figures</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> unselectAll() {
+        emptySelection();
+        onSelectionChanged();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Recherche la premiere figure qui contient le point p</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> p</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> la premiere figure trouvee sous le point p , null si aucune figure trouvee</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> FigureGraphic getOneByPosition(Point_2D p) {
+        <span class="Statement">for</span>(FigureGraphic f : getFigures())
+            <span class="Statement">if</span>(f.contain(p))
+                <span class="Statement">return</span> f;
+        <span class="Statement">return</span> <span class="Constant">null</span>;
+    }
+
+    <span class="Type">private</span> <span class="Type">void</span> setSelected(FigureGraphic figure, <span class="Type">boolean</span> value) {
+        figure.setSelected(value);
+        figure.setTransparent(value &amp;&amp; canvasMouseListener.mouseIsDown);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Recupere les figures selectionnees</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@return</span><span class="Comment"> une liste de toutes les figures selectionnees</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> List&lt;FigureGraphic&gt; getSelected() {
+        List&lt;FigureGraphic&gt; figures = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;();
+        <span class="Statement">for</span>(FigureGraphic f : getFigures())
+            <span class="Statement">if</span>(f.isSelected())
+                figures.add(f);
+        <span class="Statement">return</span> figures;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Selectionne une et une seule figure</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> figure</span><span class="Comment"> : la figure a selectionner</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> selectFigure(FigureGraphic figure) {
+        emptySelection();
+        setSelected(figure, <span class="Constant">true</span>);
+        sortFigures();
+        onSelectionChanged();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Selectionne la premiere figure qui contient p</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> p</span><span class="Comment"> : le point</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> la figure selectionne ou null</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> FigureGraphic selectOneByPosition(Point_2D p) {
+        emptySelection();
+        FigureGraphic figure = getOneByPosition(p);
+        <span class="Statement">if</span>(figure!=<span class="Constant">null</span>) {
+            setSelected(figure, <span class="Constant">true</span>);
+            sortFigures();
+        }
+        onSelectionChanged();
+        <span class="Statement">return</span> figure;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Selectionne un ensemble de figures grace a une selection.</span>
+<span class="Comment">     * Le centre des figures est determinant pour savoir si elles appartiennent a cette selection.</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> selection</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> selectPoints(Selection selection) {
+        <span class="Statement">for</span>(FigureGraphic f : getFigures())
+            setSelected(f, selection.contain(f.getCenter()));
+        sortFigures();
+        onSelectionChanged();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Selectionne toutes les figures.</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> selectAll() {
+        <span class="Statement">for</span>(FigureGraphic f : getFigures())
+            f.setSelected(<span class="Constant">true</span>);
+        onSelectionChanged();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@return</span><span class="Comment"> le nombre de figures selectionnees</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">int</span> countSelected() {
+        <span class="Statement">return</span> getSelected().size();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Deplace toutes les figures selectionnees</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> dx</span><span class="Comment"> : deplacement en x</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> dy</span><span class="Comment"> : deplacement en y</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> moveSelected(<span class="Type">int</span> dx, <span class="Type">int</span> dy) {
+        <span class="Statement">for</span>(FigureGraphic f : getSelected())
+            f.move(dx, dy);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Supprime une figure du dessin</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> figure</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> remove(Figure figure) {
+        getFigures().remove(figure);
+        onSelectionChanged();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Supprime les figures selectionnees du dessin</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> removeSelected() {
+        List&lt;FigureGraphic&gt; figures = getFigures();
+        <span class="Statement">for</span>(FigureGraphic f : getSelected())
+            figures.remove(f);
+        onSelectionChanged();
+    }
+
+}
+
+<span class="Comment">// src/ui/SelectionPanel.java</span>
+<span class="PreProc">package</span> ui;
+
+<span class="PreProc">import</span> java.awt.BorderLayout;
+<span class="PreProc">import</span> java.awt.Canvas;
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Font;
+<span class="PreProc">import</span> java.awt.GridBagConstraints;
+<span class="PreProc">import</span> java.awt.GridBagLayout;
+<span class="PreProc">import</span> java.awt.event.ActionEvent;
+<span class="PreProc">import</span> java.awt.event.ActionListener;
+<span class="PreProc">import</span> java.awt.event.KeyAdapter;
+<span class="PreProc">import</span> java.awt.event.KeyEvent;
+<span class="PreProc">import</span> java.awt.event.MouseEvent;
+<span class="PreProc">import</span> java.awt.event.MouseListener;
+<span class="PreProc">import</span> java.util.ArrayList;
+<span class="PreProc">import</span> java.util.List;
+
+<span class="PreProc">import</span> javax.swing.*;
+
+<span class="PreProc">import</span> figure.FigureGraphic;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Panneau de type accordeon qui affichent les details sur les figures actuellement selectionnees </span>
+<span class="Comment"> *</span><span class="Special"> avec la possibilite d'editer ces figures.</span>
+<span class="Comment"> */</span>
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Type">public</span> <span class="Type">class</span> SelectionPanel <span class="Type">extends</span> JScrollPane {
+    <span class="Type">protected</span> Window window;
+    <span class="Type">protected</span> Env env;
+    <span class="Type">protected</span> JPanel panel;
+    <span class="Type">protected</span> List&lt;FigureObj&gt; objs;
+
+    <span class="Type">public</span> SelectionPanel(Window window, Env env) {
+        <span class="Type">this</span>.window = window;
+        <span class="Type">this</span>.env = env;
+        setViewportView(panel = <span class="Statement">new</span> JPanel());
+        panel.setLayout(<span class="Statement">new</span> GridBagLayout());
+        onSelectionChanged();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Fonction appelee quand la selection a change</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> onSelectionChanged() {
+        panel.setVisible(<span class="Constant">false</span>);
+        panel.removeAll();
+        GridBagConstraints constraints = <span class="Statement">new</span> GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.NORTH;
+        constraints.gridx = <span class="Constant">0</span>;
+        constraints.gridy = <span class="Constant">0</span>;
+        constraints.weightx = <span class="Constant">1</span>;
+        constraints.weighty = <span class="Constant">1</span>;
+        JLabel title = <span class="Statement">new</span> JLabel(<span class="Constant">&quot;Figure(s) selectionnee(s)&quot;</span>);
+        Font font = title.getFont();
+        title.setFont(font.deriveFont(font.getStyle() ^ Font.BOLD));
+        panel.add(title, constraints);
+        <span class="Type">int</span> y = <span class="Constant">1</span>;
+        objs = <span class="Statement">new</span> ArrayList&lt;SelectionPanel.FigureObj&gt;();
+        <span class="Statement">for</span>(FigureGraphic figure : env.getSelected()) {
+            constraints.gridy = y;
+            FigureObj obj = <span class="Statement">new</span> FigureObj(<span class="Type">this</span>, figure);
+            panel.add(obj, constraints);
+            ++ y;
+            objs.add(obj);
+        }
+        <span class="Statement">if</span>(objs.size()&gt;<span class="Constant">0</span>) {
+            FigureObj obj = objs.get(<span class="Constant">0</span>);
+            obj.setOpened(<span class="Constant">true</span>);
+        }
+        panel.setVisible(<span class="Constant">true</span>);
+    }
+
+    <span class="Type">protected</span> <span class="Type">void</span> closeAll() {
+        <span class="Statement">for</span>(FigureObj obj : objs) {
+            obj.setOpened(<span class="Constant">false</span>);
+            obj.button.setEnabled(<span class="Constant">true</span>);
+        }
+    }
+
+    <span class="Type">public</span> <span class="Type">class</span> FigureObj <span class="Type">extends</span> JPanel {
+        <span class="Type">public</span> SelectionPanel parent;
+        <span class="Type">public</span> FigureGraphic figure;
+        <span class="Type">public</span> JButton button;
+        <span class="Type">public</span> JPanel options;
+
+        <span class="Type">public</span> <span class="Type">void</span> setOpened(<span class="Type">boolean</span> opened) {
+            options.setVisible(opened);
+            button.setVisible(!opened);
+        }
+        <span class="Type">public</span> <span class="Type">void</span> open() {
+            parent.closeAll();
+            setOpened(<span class="Constant">true</span>);
+        }
+        <span class="Type">public</span> FigureObj(<span class="Type">final</span> SelectionPanel parent, <span class="Type">final</span> FigureGraphic figure) {
+            <span class="Type">this</span>.parent = parent;
+            <span class="Type">this</span>.figure = figure;
+            setLayout(<span class="Statement">new</span> BorderLayout());
+            button = <span class="Statement">new</span> JButton(figure.getName());
+            button.addActionListener(<span class="Statement">new</span> ActionListener() {
+                <span class="Type">public</span> <span class="Type">void</span> actionPerformed(ActionEvent e) {
+                    open();
+                }
+            });
+            add(button, BorderLayout.NORTH);
+            options = <span class="Statement">new</span> JPanel();
+            options.setLayout(<span class="Statement">new</span> GridBagLayout());
+            GridBagConstraints constraints = <span class="Statement">new</span> GridBagConstraints();
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.anchor = GridBagConstraints.NORTH;
+            constraints.gridwidth = <span class="Constant">1</span>;
+            constraints.gridx = <span class="Constant">0</span>;
+            constraints.gridy = <span class="Constant">0</span>;
+
+            <span class="Type">final</span> JTextField nameField = <span class="Statement">new</span> JTextField(figure.getName());
+
+            options.add(<span class="Statement">new</span> JLabel(<span class="Constant">&quot;Nom: &quot;</span>), constraints);
+            ++ constraints.gridx;
+            options.add(nameField, constraints);
+            ++constraints.gridy;
+            constraints.gridx = <span class="Constant">0</span>;
+
+            options.add(<span class="Statement">new</span> JLabel(<span class="Constant">&quot;Forme: &quot;</span>), constraints);
+            ++ constraints.gridx;
+            options.add(<span class="Statement">new</span> JLabel(figure.getShapeName()), constraints);
+            ++constraints.gridy;
+            constraints.gridx = <span class="Constant">0</span>;
+
+            JLabel bgLabel = <span class="Statement">new</span> JLabel(<span class="Constant">&quot;Fond: &quot;</span>);
+            <span class="Type">final</span> Canvas bgColor = <span class="Statement">new</span> Canvas();
+            bgColor.setSize(<span class="Constant">20</span>, <span class="Constant">20</span>);
+            bgColor.setBackground(figure.getBackgroundColor());
+            options.add(bgLabel, constraints);
+            ++ constraints.gridx;
+            options.add(bgColor, constraints);
+            ++constraints.gridy;
+            constraints.gridx = <span class="Constant">0</span>;
+
+            JLabel strokeLabel = <span class="Statement">new</span> JLabel(<span class="Constant">&quot;Contour: &quot;</span>);
+            <span class="Type">final</span> Canvas strokeColor = <span class="Statement">new</span> Canvas();
+            strokeColor.setSize(<span class="Constant">20</span>, <span class="Constant">20</span>);
+            strokeColor.setBackground(figure.getStrokeColor());
+            options.add(strokeLabel, constraints);
+            ++ constraints.gridx;
+            options.add(strokeColor, constraints);
+            ++constraints.gridy;
+            constraints.gridx = <span class="Constant">0</span>;
+
+            add(options, BorderLayout.CENTER);
+
+            MouseListener clickBg = <span class="Statement">new</span> MouseListener() {
+                <span class="Type">public</span> <span class="Type">void</span> mouseReleased(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mousePressed(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mouseExited(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mouseEntered(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mouseClicked(MouseEvent arg0) {
+                    Color c = JColorChooser.showDialog(window, <span class="Constant">&quot;Couleur de fond&quot;</span>, figure.getBackgroundColor());
+                    <span class="Statement">if</span>(c==<span class="Constant">null</span>) <span class="Statement">return</span>;
+                    figure.setBackgroundColor(c);
+                    bgColor.setBackground(c);
+                    env.getCanvas().repaint();
+                }
+            };
+            MouseListener clickStroke = <span class="Statement">new</span> MouseListener() {
+                <span class="Type">public</span> <span class="Type">void</span> mouseReleased(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mousePressed(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mouseExited(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mouseEntered(MouseEvent arg0) {}
+                <span class="Type">public</span> <span class="Type">void</span> mouseClicked(MouseEvent arg0) {
+                    Color c = JColorChooser.showDialog(window, <span class="Constant">&quot;Couleur de contour&quot;</span>, figure.getStrokeColor());
+                    <span class="Statement">if</span>(c==<span class="Constant">null</span>) <span class="Statement">return</span>;
+                    figure.setStrokeColor(c);
+                    strokeColor.setBackground(c);
+                    env.getCanvas().repaint();
+                }
+            };
+
+            bgLabel.addMouseListener(clickBg);
+            bgColor.addMouseListener(clickBg);
+            strokeLabel.addMouseListener(clickStroke);
+            strokeColor.addMouseListener(clickStroke);
+
+            nameField.addKeyListener(<span class="Statement">new</span> KeyAdapter() {
+                <span class="Type">public</span> <span class="Type">void</span> keyReleased(KeyEvent e) {
+                    String name = nameField.getText();
+                    <span class="Statement">if</span>(name.length()==<span class="Constant">0</span>) <span class="Statement">return</span>;
+                    figure.setName(name);
+                    button.setText(name);
+                    env.getCanvas().repaint();
+                }
+            });
+
+            setOpened(<span class="Constant">false</span>);
+        }
+    }
+}
+
+<span class="Comment">// src/ui/CanvasArea.java</span>
+<span class="PreProc">package</span> ui;
+<span class="PreProc">import</span> java.awt.Canvas;
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Dimension;
+<span class="PreProc">import</span> java.awt.Graphics;
+<span class="PreProc">import</span> java.awt.Graphics2D;
+<span class="PreProc">import</span> java.awt.Image;
+<span class="PreProc">import</span> java.awt.RenderingHints;
+<span class="PreProc">import</span> java.util.ArrayList;
+<span class="PreProc">import</span> java.util.Collections;
+<span class="PreProc">import</span> java.util.List;
+
+<span class="PreProc">import</span> figure.*;
+
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> La zone de dessin</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Type">public</span> <span class="Type">class</span> CanvasArea <span class="Type">extends</span> Canvas {
+    <span class="Type">protected</span> Env env;
+    <span class="Type">private</span> Mode mode = Mode.MOVE;
+    <span class="Type">protected</span> Selection selection = <span class="Constant">null</span>;
+
+    <span class="Type">public</span> CanvasArea(Env env) {
+        <span class="Type">this</span>.env = env;
+        setBackground(Color.white);
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setMode(Mode m) {
+        <span class="Type">this</span>.mode = m;
+    }
+    <span class="Type">public</span> Mode getMode() {
+        <span class="Statement">return</span> <span class="Type">this</span>.mode;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setSelection(Selection s) {
+        selection = s;
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        List&lt;FigureGraphic&gt; figures = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;(env.getFigures());
+        Collections.reverse(figures);
+        <span class="Statement">for</span>(FigureGraphic f : figures)
+            f.draw(g);
+        <span class="Statement">if</span>(selection!=<span class="Constant">null</span>)
+            selection.draw(g);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Double buffering implementation</span>
+<span class="Special">     </span><span class="Comment">*/</span>
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> update(Graphics g) {
+        Graphics offgc;
+        Image offscreen = <span class="Constant">null</span>;
+        <span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;deprecation&quot;</span>)
+        Dimension d = size();
+        <span class="Comment">// create the offscreen buffer and associated Graphics</span>
+        offscreen = createImage(d.width, d.height);
+        offgc = offscreen.getGraphics();
+        <span class="Comment">// clear the exposed area</span>
+        offgc.setColor(getBackground());
+        offgc.fillRect(<span class="Constant">0</span>, <span class="Constant">0</span>, d.width, d.height);
+        offgc.setColor(getForeground());
+        <span class="Comment">// do normal redraw</span>
+        paint(offgc);
+        <span class="Comment">// transfer offscreen to window</span>
+        g.drawImage(offscreen, <span class="Constant">0</span>, <span class="Constant">0</span>, <span class="Type">this</span>);
+    }
+}
+
+<span class="Comment">// src/figure/Rectangle.java</span>
+<span class="PreProc">package</span> figure;
+
+<span class="PreProc">import</span> figure.FigureGraphic;
+<span class="PreProc">import</span> figure.Point_2D;
+
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Graphics;
+<span class="PreProc">import</span> java.io.Serializable;
+
+<span class="PreProc">import</span> ui.Env;
+
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Class for rectangle figure</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> Rectangle <span class="Type">extends</span> FigureGraphic <span class="Type">implements</span> Serializable
+{
+    <span class="Type">private</span> <span class="Type">static</span> <span class="Type">long</span> nbOfRectangles = <span class="Constant">0</span>;
+
+    <span class="Type">protected</span> Point_2D a, b;
+
+    <span class="Type">public</span> Rectangle(String name) {
+        <span class="Type">super</span>(name);
+        ++nbOfRectangles;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor that will generate by itself the name</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> Rectangle() {
+        <span class="Type">this</span>(<span class="Constant">&quot;rect_&quot;</span>+(nbOfRectangles+<span class="Constant">1</span>));
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> String</span><span class="Comment"> name</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> stroke</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> bg background color</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> x position</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> y position</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> w width</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> h height</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> Rectangle(String name, Color stroke, Color bg, <span class="Type">int</span> x, <span class="Type">int</span> y, <span class="Type">int</span> w, <span class="Type">int</span> h) {
+        <span class="Type">this</span>(name);
+        setColors(stroke, bg);
+        setFirstPoint(x, y);
+        setSecondPoint(x+w, y+h);
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Create by first click</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> env</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> x</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> y</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> init(Env env, <span class="Type">int</span> x, <span class="Type">int</span> y) {
+        setColors(env);
+        a = <span class="Statement">new</span> Point_2D(x, y);
+        b = <span class="Statement">new</span> Point_2D(x, y);
+        setSelected(<span class="Constant">true</span>);
+        setBuilding(<span class="Constant">true</span>);
+    }
+
+    <span class="Type">public</span> Point_2D getCenter() {
+        <span class="Statement">return</span> <span class="Statement">new</span> Point_2D ((a.getX()+b.getX())/<span class="Constant">2</span>, (a.getY()+b.getY())/<span class="Constant">2</span>);
+    }
+
+    <span class="Type">public</span> <span class="Type">int</span> getWidth() {
+        <span class="Statement">return</span> Math.abs(a.getX() - b.getX());
+    }
+
+    <span class="Type">public</span> <span class="Type">int</span> getHeight() {
+        <span class="Statement">return</span> Math.abs(a.getY() - b.getY());
+    }
+
+    <span class="Type">public</span> Point_2D getTopLeft() {
+        <span class="Statement">return</span> <span class="Statement">new</span> Point_2D(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()));
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> move(<span class="Type">int</span> dx, <span class="Type">int</span> dy) {
+        a.move(dx, dy);
+        b.move(dx, dy);
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> draw(Graphics g) {
+        <span class="Type">int</span> width = getWidth();
+        <span class="Type">int</span> height = getHeight();
+        Point_2D topleft = getTopLeft();
+        g.setColor(getBgForCurrentState());
+        g.fillRect(topleft.getX(), topleft.getY(), width, height);
+        g.setColor(getStrokeForCurrentState());
+        g.drawRect(topleft.getX(), topleft.getY(), width, height);
+        afterDraw(g);
+    }
+
+    <span class="Type">public</span> <span class="Type">boolean</span> contain(Point_2D p) {
+        <span class="Type">int</span> width = getWidth();
+        <span class="Type">int</span> height = getHeight();
+        Point_2D topleft = getTopLeft();
+        <span class="Statement">if</span> ( topleft.getX() &lt;= p.getX() &amp;&amp; p.getX() &lt;= topleft.getX()+width
+          &amp;&amp; topleft.getY() &lt;= p.getY() &amp;&amp; p.getY() &lt;= topleft.getY()+height) {
+            <span class="Statement">return</span> <span class="Constant">true</span>;
+        }
+        <span class="Statement">return</span> <span class="Constant">false</span>;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setFirstPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        a = <span class="Statement">new</span> Point_2D(x, y);
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setSecondPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        b = <span class="Statement">new</span> Point_2D(x, y);
+    }
+
+    <span class="Type">private</span> <span class="Type">boolean</span> canBeFinished() {
+        <span class="Statement">return</span> getWidth()&gt;THRESHOLD_BUILDING_PX &amp;&amp; getHeight()&gt;THRESHOLD_BUILDING_PX;
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithKey() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithMouse() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onFigureFinish() {
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onPressPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onReleasePoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        setSecondPoint(x, y);
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onMovePoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        setSecondPoint(x, y);
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> String getShapeName() {
+        <span class="Statement">return</span> <span class="Constant">&quot;Rectangle&quot;</span>;
+    }
+}
+<span class="Comment">// src/figure/Circle.java</span>
+<span class="PreProc">package</span> figure;
+
+<span class="PreProc">import</span> figure.FigureGraphic;
+<span class="PreProc">import</span> figure.Point_2D;
+
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Graphics;
+<span class="PreProc">import</span> java.io.Serializable;
+
+<span class="PreProc">import</span> ui.Env;
+
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Class for circle figure</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> Circle <span class="Type">extends</span> FigureGraphic <span class="Type">implements</span> Serializable
+{
+    <span class="Type">private</span> <span class="Type">static</span> <span class="Type">long</span> nbOfCircles = <span class="Constant">0</span>;
+
+    <span class="Type">protected</span> Point_2D center;
+    <span class="Type">protected</span> <span class="Type">int</span> radius;
+
+    <span class="Type">public</span> Circle(String name) {
+        <span class="Type">super</span>(name);
+        ++nbOfCircles;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor that will generate by itself the name</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> Circle() {
+        <span class="Type">this</span>(<span class="Constant">&quot;circle_&quot;</span>+(nbOfCircles+<span class="Constant">1</span>));
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> String</span><span class="Comment"> name</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> stroke</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> bg background color</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> x position</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> y position</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> radius of the cercle</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> Circle(String name, Color stroke, Color bg, <span class="Type">int</span> x, <span class="Type">int</span> y, <span class="Type">int</span> radius) {
+        <span class="Type">super</span>(name);
+        setColors(stroke, bg);
+        setRadius(radius);
+        setCenter(x, y);
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> init(Env env, <span class="Type">int</span> x, <span class="Type">int</span> y) {
+        setColors(env);
+        setCenter(x, y);
+        setSelected(<span class="Constant">true</span>);
+        setBuilding(<span class="Constant">true</span>);
+    }
+
+    <span class="Type">public</span> Point_2D getCenter() {
+        <span class="Statement">return</span> center;
+    }
+    <span class="Type">public</span> <span class="Type">void</span> setCenter(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        center = <span class="Statement">new</span> Point_2D(x, y);
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> move(<span class="Type">int</span> dx, <span class="Type">int</span> dy) {
+        center.move(dx,dy);
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> setRadius(<span class="Type">int</span> rad) {
+        radius = rad;
+    }
+    <span class="Type">public</span> <span class="Type">int</span> getRadius() {
+        <span class="Statement">return</span> radius;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> fitRadiusWithPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        x -= center.getX();
+        y -= center.getY();
+        <span class="Type">int</span> radius = (<span class="Type">int</span>)Math.sqrt(x*x+y*y);
+        setRadius(radius);
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> draw(Graphics g) {
+        Point_2D c = getCenter();
+        g.setColor(getBgForCurrentState());
+        g.fillOval(c.x-radius, c.y-radius, radius*<span class="Constant">2</span>, radius*<span class="Constant">2</span>);
+        g.setColor(getStrokeForCurrentState());
+        g.drawOval(c.x-radius, c.y-radius, radius*<span class="Constant">2</span>, radius*<span class="Constant">2</span>);
+        afterDraw(g);
+    }
+
+    <span class="Type">public</span> <span class="Type">boolean</span> contain(Point_2D p) {
+        <span class="Statement">return</span> (Point_2D.distance(center, p) &lt; radius);   }
+
+    <span class="Type">public</span> <span class="Type">double</span> getSurface () {
+        <span class="Statement">return</span> Math.PI*radius*radius;
+    }
+
+    <span class="Type">private</span> <span class="Type">boolean</span> canBeFinished() {
+        <span class="Statement">return</span> <span class="Constant">2</span>*radius &gt; THRESHOLD_BUILDING_PX;
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithKey() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithMouse() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onFigureFinish() {
+
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onPressPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        setCenter(x, y);
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onReleasePoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        fitRadiusWithPoint(x, y);
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onMovePoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        fitRadiusWithPoint(x, y);
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> String getShapeName() {
+        <span class="Statement">return</span> <span class="Constant">&quot;Cercle&quot;</span>;
+    }
+}
+<span class="Comment">// src/figure/Point_2D.java</span>
+<span class="PreProc">package</span> figure;^M
+^M
+<span class="PreProc">import</span> java.io.Serializable;^M
+^M
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)^M
+<span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">*</span><span class="Special"> A point on the x,y axis^M</span>
+<span class="Comment">*/</span>^M
+<span class="Type">public</span> <span class="Type">class</span> Point_2D <span class="Type">implements</span> Serializable^M
+{^M
+    <span class="Type">protected</span> <span class="Type">int</span> x;^M
+    <span class="Type">protected</span> <span class="Type">int</span> y;^M
+^M
+    <span class="Type">public</span> Point_2D ()^M
+    {^M
+        x = <span class="Constant">0</span>;^M
+        y = <span class="Constant">0</span>;^M
+    }^M
+^M
+    <span class="Type">public</span> Point_2D ( <span class="Type">int</span> x, <span class="Type">int</span> y)^M
+    {^M
+        <span class="Type">this</span>.x = x;^M
+        <span class="Type">this</span>.y = y;^M
+    }^M
+^M
+    <span class="Type">public</span> Point_2D (Point_2D p)^M
+    {^M
+        x = p.x;^M
+        y = p.y;^M
+    }^M
+^M
+    <span class="Comment">// Accesseurs^M</span>
+     ^M
+    <span class="Type">public</span> <span class="Type">int</span> getX () { <span class="Statement">return</span> x; }^M
+    <span class="Type">public</span> <span class="Type">int</span> getY () { <span class="Statement">return</span> y; }^M
+    <span class="Type">public</span> <span class="Type">void</span> setX (<span class="Type">int</span> val) { x = val; }^M
+    <span class="Type">public</span> <span class="Type">void</span> setY (<span class="Type">int</span> val) { y = val; }^M
+^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">     *</span><span class="Special"> Affichage contenu^M</span>
+<span class="Special">     </span><span class="Comment">*/</span>^M
+^M
+    <span class="Type">public</span> String toString()^M
+    {^M
+        <span class="Statement">return</span> <span class="Statement">new</span> String (<span class="Constant">&quot;(&quot;</span>+getX()+<span class="Constant">&quot;, &quot;</span>+getY()+<span class="Constant">&quot;)&quot;</span>);^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">void</span> move(<span class="Type">int</span> dx, <span class="Type">int</span> dy)^M
+    {^M
+        <span class="Type">this</span>.x += dx;^M
+        <span class="Type">this</span>.y += dy;^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">double</span> distance(Point_2D p1, Point_2D p2)^M
+    {^M
+        <span class="Type">int</span> dx = p1.x-p2.x;^M
+        <span class="Type">int</span> dy = p1.y-p2.y;^M
+^M
+        <span class="Statement">return</span> Math.sqrt((dx*dx)+(dy*dy));^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">double</span> distance(Point_2D p)^M
+    {^M
+        <span class="Type">int</span> dx = x-p.x;^M
+        <span class="Type">int</span> dy = y-p.y;^M
+^M
+        <span class="Statement">return</span> ((<span class="Type">int</span>)Math.sqrt((dx*dx)+(dy*dy)));^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">boolean</span> equal (Point_2D p1, Point_2D p2)^M
+    {^M
+        <span class="Statement">return</span> (Point_2D.distance(p1,p2) &lt; <span class="Constant">1</span>);^M
+    }^M
+^M
+^M
+}
+<span class="Comment">// src/figure/Polygon.java</span>
+<span class="PreProc">package</span> figure;
+
+<span class="PreProc">import</span> figure.FigureGraphic;
+<span class="PreProc">import</span> figure.Point_2D;
+
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.awt.Graphics;
+<span class="PreProc">import</span> java.io.Serializable;
+<span class="PreProc">import</span> java.util.ArrayList;
+<span class="PreProc">import</span> java.util.List;
+
+<span class="PreProc">import</span> ui.Env;
+
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special"> Class for polygon figure</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> Polygon <span class="Type">extends</span> FigureGraphic <span class="Type">implements</span> Serializable
+{
+    <span class="Comment">// Taille de la poignee de terminaison</span>
+    <span class="Type">protected</span> <span class="Type">static</span> <span class="Type">final</span> <span class="Type">int</span> FINISH_HANDLE_RADIUS_PX = <span class="Constant">15</span>;
+
+    <span class="Type">private</span> <span class="Type">static</span> <span class="Type">long</span> nbOfPolygons = <span class="Constant">0</span>;
+
+    <span class="Type">protected</span> List&lt;Point_2D&gt; points = <span class="Statement">new</span> ArrayList&lt;Point_2D&gt;();
+    <span class="Type">protected</span> <span class="Type">int</span>[] xAll, yAll;
+
+    <span class="Type">public</span> Polygon(String name) {
+        <span class="Type">super</span>(name);
+        ++nbOfPolygons;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor that will generate by itself the name</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> Polygon() {
+        <span class="Type">this</span>(<span class="Constant">&quot;poly_&quot;</span>+(nbOfPolygons+<span class="Constant">1</span>));
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> String</span><span class="Comment"> name</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> stroke</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> bg background color</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> Polygon(String name, Color stroke, Color bg) {
+        <span class="Type">this</span>(name);
+        setColors(stroke, bg);
+    }
+    <span class="Comment">/**</span>
+<span class="Comment">     *</span><span class="Special"> Create by first click</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> env</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> x</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> y</span>
+<span class="Comment">     */</span>
+    <span class="Type">public</span> <span class="Type">void</span> init(Env env, <span class="Type">int</span> x, <span class="Type">int</span> y) {
+        setColors(env);
+        addPoint(x, y);
+        addPoint(x, y);
+        setSelected(<span class="Constant">true</span>);
+        setBuilding(<span class="Constant">true</span>);
+    }
+
+    <span class="Type">public</span> Point_2D getCenter() {
+        <span class="Type">int</span> xSum=<span class="Constant">0</span>, ySum=<span class="Constant">0</span>;
+        <span class="Statement">for</span> (Point_2D point : points) {
+            xSum += point.x;
+            ySum += point.y;
+        }
+        <span class="Statement">return</span> <span class="Statement">new</span> Point_2D( xSum / points.size(), ySum / points.size());
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> move(<span class="Type">int</span> dx, <span class="Type">int</span> dy) {
+        <span class="Statement">for</span> (Point_2D point : points)
+            point.move(dx,dy);
+        updateXYAll();
+    }
+    <span class="Type">public</span> <span class="Type">void</span> addPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        points.add(<span class="Statement">new</span> Point_2D(x,y));
+        updateXYAll();
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Change last added point</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> editLastPoint(Point_2D p) {
+        <span class="Type">int</span> size = points.size();
+        <span class="Statement">if</span>(size==<span class="Constant">0</span>) {
+            points.add(p);
+        }
+        <span class="Statement">else</span> {
+            points.set(points.size()-<span class="Constant">1</span>, p);
+        }
+        updateXYAll();
+    }
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Change last added point</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">void</span> editLastPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        editLastPoint(<span class="Statement">new</span> Point_2D(x, y));
+    }
+
+    <span class="Type">protected</span> <span class="Type">void</span> updateXYAll() {
+        xAll = <span class="Statement">new</span> <span class="Type">int</span>[points.size()];
+        yAll = <span class="Statement">new</span> <span class="Type">int</span>[points.size()];
+
+        <span class="Type">int</span> i=<span class="Constant">0</span>;
+        <span class="Statement">for</span> (Point_2D point : points) {
+            xAll[i] = point.x;
+            yAll[i] = point.y;
+            i++;
+        }
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> draw(Graphics g) {
+        <span class="Statement">if</span>(isBuilding()) {
+            g.setColor(Color.black);
+            Point_2D last = <span class="Constant">null</span>, first = <span class="Constant">null</span>;
+            <span class="Statement">for</span>(Point_2D p : points) {
+                <span class="Statement">if</span>(last!=<span class="Constant">null</span>)
+                    g.drawLine(last.x, last.y, p.x, p.y);
+                <span class="Statement">else</span>
+                    first = p;
+                last = p;
+            }
+            <span class="Statement">if</span>(drawTerminaisonEnabled() &amp;&amp; canBeFinished()) {
+                <span class="Comment">// Dessine une poignee de terminaison</span>
+                <span class="Statement">if</span>(canBeFinishedWithMouse()) <span class="Comment">// mouseover</span>
+                    g.setColor(<span class="Statement">new</span> Color(<span class="Constant">255</span>, <span class="Constant">100</span>, <span class="Constant">100</span>));
+                <span class="Statement">else</span>
+                    g.setColor(Color.white);
+                g.fillOval(first.x-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, first.y-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+                g.setColor(<span class="Statement">new</span> Color(<span class="Constant">0</span>, <span class="Constant">0</span>, <span class="Constant">0</span>));
+                g.drawOval(first.x-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, first.y-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+            }
+
+        }
+        <span class="Statement">else</span> {
+            g.setColor(getBgForCurrentState());
+            g.fillPolygon(xAll, yAll, points.size());
+            g.setColor(getStrokeForCurrentState());
+            g.drawPolygon(xAll, yAll, points.size());
+        }
+        afterDraw(g);
+    }
+
+    <span class="Type">public</span> <span class="Type">boolean</span> contain(Point_2D p) {
+        <span class="Type">int</span> nvert = points.size();
+        <span class="Type">int</span>[] verty = yAll;
+        <span class="Type">int</span>[] vertx = xAll;
+        <span class="Type">int</span> testx = p.x;
+        <span class="Type">int</span> testy = p.y;
+
+        <span class="Type">int</span> i, j;
+        <span class="Type">boolean</span> c = <span class="Constant">false</span>;
+        <span class="Statement">for</span> (i = <span class="Constant">0</span>, j = nvert-<span class="Constant">1</span>; i &lt; nvert; j = i++) {
+          <span class="Statement">if</span> ( ((verty[i]&gt;testy) != (verty[j]&gt;testy)) &amp;&amp;
+                  (testx &lt; (vertx[j]-vertx[i]) * (testy-verty[i]) / (verty[j]-verty[i]) + vertx[i]) )
+               c = !c;
+        }
+
+        <span class="Statement">return</span> c;
+    }
+
+    <span class="Type">protected</span> <span class="Type">boolean</span> drawTerminaisonEnabled() {
+        <span class="Statement">return</span> <span class="Constant">true</span>;
+    }
+
+    <span class="Type">private</span> <span class="Type">boolean</span> canBeFinished() {
+        <span class="Statement">return</span> points.size() &gt; <span class="Constant">3</span>;
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithKey() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithMouse() {
+        <span class="Statement">return</span> canBeFinished() &amp;&amp; points.get(<span class="Constant">0</span>).distance(points.get(points.size()-<span class="Constant">1</span>))&lt;FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>;
+    }
+
+    <span class="Type">public</span> <span class="Type">void</span> closePath() {
+        points.remove(points.size()-<span class="Constant">1</span>);
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onFigureFinish() {
+        closePath();
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onPressPoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        addPoint(x, y);
+    }
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onReleasePoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> <span class="Type">void</span> onMovePoint(<span class="Type">int</span> x, <span class="Type">int</span> y) {
+        editLastPoint(x, y);
+    }
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> String getShapeName() {
+        <span class="Statement">return</span> <span class="Constant">&quot;Polygone&quot;</span>;
+    }
+}
+<span class="Comment">// src/figure/FigureGraphic.java</span>
+<span class="PreProc">package</span> figure;^M
+<span class="PreProc">import</span> java.awt.*;^M
+<span class="PreProc">import</span> java.io.Serializable;^M
+^M
+<span class="PreProc">import</span> ui.Env;^M
+^M
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)^M
+<span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment"> *</span><span class="Special"> Abstract class for figures that propose functions for UI interaction^M</span>
+<span class="Special"> </span><span class="Comment">*/</span>^M
+<span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">class</span> FigureGraphic <span class="Type">implements</span> Figure, Serializable^M
+{^M
+    <span class="Type">protected</span> Color colorStroke, colorBackground;^M
+    <span class="Type">protected</span> String name;^M
+    ^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">     *</span><span class="Special"> Seuil de terminaison d'une figure en pixel^M</span>
+<span class="Comment">     *</span><span class="Special"> Cela correspond au seuil de visibilite d'une figure / du rapprochement de deux points.</span><span class="Comment"> ^M</span>
+<span class="Comment">     * En dessous, on considere que c'est trop petit pour etre valide^M</span>
+<span class="Comment">     */</span>^M
+    <span class="Type">protected</span> <span class="Type">static</span> <span class="Type">final</span> <span class="Type">int</span> THRESHOLD_BUILDING_PX = <span class="Constant">8</span>;^M
+    ^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">     *</span><span class="Special"> A selected figure should display differently^M</span>
+<span class="Special">     </span><span class="Comment">*/</span>^M
+    <span class="Type">protected</span> <span class="Type">boolean</span> selected = <span class="Constant">false</span>;^M
+    ^M
+    <span class="Type">protected</span> <span class="Type">boolean</span> transparent = <span class="Constant">false</span>;^M
+    ^M
+    <span class="Type">protected</span> <span class="Type">boolean</span> building = <span class="Constant">false</span>; <span class="Comment">// L'objet est en train d'etre construit^M</span>
+
+    <span class="Type">public</span> <span class="Type">boolean</span> isBuilding() {^M
+        <span class="Statement">return</span> building;^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">void</span> setBuilding(<span class="Type">boolean</span> building) {^M
+        <span class="Type">this</span>.building = building;^M
+    }^M
+^M
+    <span class="Type">public</span> FigureGraphic (String name, Color colorStroke, Color colorBackground) {^M
+        <span class="Type">this</span>.colorStroke = colorStroke;   ^M
+        <span class="Type">this</span>.colorBackground = colorBackground;   ^M
+        <span class="Type">this</span>.name = name;^M
+    }^M
+^M
+    <span class="Type">public</span> FigureGraphic (String name) {^M
+        <span class="Type">this</span>(name, Color.black, Color.white);^M
+    }^M
+    ^M
+    <span class="Type">public</span> <span class="Type">void</span> setColors(Env env) {^M
+        setColors(env.getStrokeColor(), env.getBackgroundColor());^M
+    }^M
+    <span class="Type">public</span> <span class="Type">void</span> setColors(Color stroke, Color bg) {^M
+        colorStroke = stroke;^M
+        colorBackground = bg;^M
+    }^M
+^M
+    <span class="Type">public</span> Color getStrokeColor()^M
+    {^M
+        <span class="Statement">return</span> colorStroke;   ^M
+    }^M
+^M
+    <span class="Type">public</span> Color getBackgroundColor()^M
+    {^M
+        <span class="Statement">return</span> colorBackground;   ^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">void</span> setStrokeColor(Color c) {^M
+        colorStroke = c;^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">void</span> setBackgroundColor(Color c) {^M
+        colorBackground = c;^M
+    }^M
+    ^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> Distance between Figure f1 and f1^M</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> Figure</span><span class="Comment"> f1^M</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Figure</span><span class="Comment"> f2^M</span>
+<span class="Comment">    * </span><span class="Special">@return</span><span class="Comment"> double the distance^M</span>
+<span class="Comment">    */</span>^M
+    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">double</span> distance(Figure f1, Figure f2)^M
+    {^M
+        <span class="Statement">return</span> Point_2D.distance(f1.getCenter(), f2.getCenter());^M
+    }^M
+^M
+    <span class="Type">protected</span> <span class="Type">void</span> drawCenter(Graphics g) {^M
+        Point_2D c = getCenter();^M
+        g.drawLine(c.x-<span class="Constant">1</span>, c.y, c.x+<span class="Constant">1</span>, c.y);^M
+        g.drawLine(c.x, c.y-<span class="Constant">1</span>, c.x, c.y+<span class="Constant">1</span>);^M
+    }^M
+    ^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> Draw the name of the figure on the Graphics^M</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> Graphics</span><span class="Comment"> g^M</span>
+<span class="Comment">    */</span>^M
+    <span class="Type">protected</span> <span class="Type">void</span> drawName(Graphics g) {^M
+        Point_2D c = getCenter();^M
+        g.drawString(name, c.x+<span class="Constant">2</span>, c.y+<span class="Constant">12</span>);^M
+    }^M
+    ^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> draw(Graphics g);^M
+^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> A method called after the draw method^M</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> Graphics</span><span class="Comment"> g^M</span>
+<span class="Comment">    */</span>^M
+    <span class="Type">public</span> <span class="Type">void</span> afterDraw(Graphics g) {^M
+        <span class="Statement">if</span>(isSelected()) {^M
+            drawCenter(g);^M
+            drawName(g);^M
+        }^M
+    }^M
+^M
+    <span class="Type">public</span> String getName() {^M
+        <span class="Statement">return</span> name;^M
+    }^M
+    <span class="Type">public</span> <span class="Type">void</span> setName(String name) {^M
+        <span class="Type">this</span>.name = name;^M
+    }^M
+    ^M
+    <span class="PreProc">@Override</span>^M
+    <span class="Type">public</span> String toString() {^M
+        <span class="Statement">return</span> getName();^M
+    }^M
+^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> The getter for the stroke color^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> Color getStrokeForCurrentState() {^M
+        Color c = colorStroke;^M
+        <span class="Statement">return</span> transparent || building ? <span class="Statement">new</span> Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()/<span class="Constant">2</span>) : c;^M
+    }^M
+^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> The getter for the background color^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> Color getBgForCurrentState() {^M
+        Color c = colorBackground;^M
+        <span class="Statement">return</span> transparent || building ? <span class="Statement">new</span> Color(c.getRed(), c.getGreen(), c.getBlue(),  (c.getAlpha()*<span class="Constant">2</span>)/<span class="Constant">3</span>) : c;^M
+    }^M
+^M
+    <span class="Type">public</span> <span class="Type">void</span> setSelected(<span class="Type">boolean</span> s) {^M
+        selected = s;^M
+    }^M
+    <span class="Type">public</span> <span class="Type">void</span> setTransparent(<span class="Type">boolean</span> o) {^M
+        transparent = o;^M
+    }^M
+    <span class="Type">public</span> <span class="Type">boolean</span> isSelected() {^M
+        <span class="Statement">return</span> selected;^M
+    }^M
+    ^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">     *</span><span class="Special"> Created by first click^M</span>
+<span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> Env</span><span class="Comment"> env^M</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> x^M</span>
+<span class="Comment">     * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> y^M</span>
+<span class="Comment">     */</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> init(Env env, <span class="Type">int</span> x, <span class="Type">int</span> y);^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> Is there enough information to complete the figure construction with the mouse^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">boolean</span> canBeFinishedWithMouse();^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> Is there enough information to complete the figure construction with the a keyboard key^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">boolean</span> canBeFinishedWithKey();^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> An event that is called when the figure is finished^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> onFigureFinish();^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> When figure is in construction mode, perform a certain task when click^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> onPressPoint(<span class="Type">int</span> x, <span class="Type">int</span> y);^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> When figure is in construction mode, perform a certain task when click release^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> onReleasePoint(<span class="Type">int</span> x, <span class="Type">int</span> y);^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> When the point is moved^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> onMovePoint(<span class="Type">int</span> x, <span class="Type">int</span> y);^M
+    <span class="Comment">/**</span><span class="Special">^M</span>
+<span class="Comment">    *</span><span class="Special"> Name of the type of the figure^M</span>
+<span class="Special">    </span><span class="Comment">*/</span>^M
+    <span class="Type">public</span> <span class="Type">abstract</span> String getShapeName();^M
+}
+<span class="Comment">// src/figure/Triangle.java</span>
+<span class="PreProc">package</span> figure;
+
+<span class="PreProc">import</span> java.awt.Color;
+<span class="PreProc">import</span> java.io.Serializable;
+
+<span class="PreProc">@SuppressWarnings</span>(<span class="Constant">&quot;serial&quot;</span>)
+<span class="Comment">/**</span>
+<span class="Comment"> *</span><span class="Special">  Class for the triangle figure</span>
+<span class="Special"> </span><span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">class</span> Triangle <span class="Type">extends</span> Polygon <span class="Type">implements</span> Serializable
+{
+    <span class="Type">private</span> <span class="Type">static</span> <span class="Type">long</span> nbOfTriangles = <span class="Constant">0</span>;
+
+    <span class="Type">public</span> Triangle(String name) {
+        <span class="Type">super</span>(name);
+        nbOfTriangles ++;
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor that will generate by itself the name</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> Triangle() {
+        <span class="Type">this</span>(<span class="Constant">&quot;tri_&quot;</span>+(nbOfTriangles+<span class="Constant">1</span>));
+    }
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Constructor</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> String</span><span class="Comment"> name</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> stroke</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> Color</span><span class="Comment"> bg background color</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> x1 position</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> y1 position</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> x2 width</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> y2 height</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> x3 width</span>
+<span class="Comment">    * </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> y3 height</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> Triangle(String name, Color stroke, Color bg, <span class="Type">int</span> x1, <span class="Type">int</span> y1, <span class="Type">int</span> x2, <span class="Type">int</span> y2, <span class="Type">int</span> x3, <span class="Type">int</span> y3) {
+        <span class="Type">this</span>(name);
+        setColors(stroke, bg);
+        addPoint(x1, y1);
+        addPoint(x2, y2);
+        addPoint(x3, y3);
+    }
+
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinished() {
+        <span class="Statement">return</span> points.size()==<span class="Constant">4</span>;
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithKey() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+    <span class="Type">public</span> <span class="Type">boolean</span> canBeFinishedWithMouse() {
+        <span class="Statement">return</span> canBeFinished();
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">protected</span> <span class="Type">boolean</span> drawTerminaisonEnabled() {
+        <span class="Statement">return</span> <span class="Constant">false</span>;
+    }
+
+    <span class="PreProc">@Override</span>
+    <span class="Type">public</span> String getShapeName() {
+        <span class="Statement">return</span> <span class="Constant">&quot;Triangle&quot;</span>;
+    }
+}
+<span class="Comment">// src/figure/Figure.java</span>
+<span class="PreProc">package</span> figure;
+
+<span class="PreProc">import</span> figure.Point_2D;
+
+<span class="PreProc">import</span> java.awt.Graphics;
+
+<span class="Comment">/**</span>
+<span class="Comment">*</span><span class="Special"> An interface implemented by other figures.</span>
+<span class="Comment">* By implementing this interface figures can be used for various </span>
+<span class="Comment">* operations like drawing, drag</span><span class="Error">&amp;</span><span class="Comment">drop, selecting, etc.</span>
+<span class="Comment">*/</span>
+<span class="Type">public</span> <span class="Type">interface</span> Figure
+{
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Center of the figure</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@return</span><span class="Comment"> Point_2D</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> <span class="Type">abstract</span> Point_2D getCenter();
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Move the figure by dx and dy</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> int</span><span class="Comment"> dx delta x</span>
+<span class="Comment">    * </span><span class="Special">@Param</span><span class="Identifier"> int</span><span class="Comment"> dy delta y</span>
+<span class="Comment">    * </span><span class="Special">@return</span><span class="Comment"> void</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> move(<span class="Type">int</span> dx, <span class="Type">int</span> dy);
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Tell if the figure is in that point p</span>
+<span class="Comment">    </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> Point_2D</span><span class="Comment"> p point</span>
+<span class="Comment">    * </span><span class="Special">@return</span><span class="Comment"> boolean</span>
+<span class="Comment">    */</span>
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">boolean</span> contain(Point_2D p);
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Get the name of the figure</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">abstract</span> String toString();
+
+    <span class="Comment">/**</span>
+<span class="Comment">    *</span><span class="Special"> Drag the figure on the screen</span>
+<span class="Special">    </span><span class="Comment">*/</span>
+    <span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">void</span> draw(Graphics gx);
+}
+</pre>
+</body>
+</html>
