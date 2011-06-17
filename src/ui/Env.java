@@ -98,7 +98,7 @@ public class Env {
 	}
 	
 	/**
-	 * Trie les figures de telle sorte que les figures sélectionnées apparaissent en premier. Outre la sélection, l'ordre est conservé.
+	 * Trie les figures de telle sorte que les figures selectionnees apparaissent en premier. Outre la selection, l'ordre est conserve.
 	 */
 	public void sortFigures() {
 		List<FigureGraphic> newfigures = new ArrayList<FigureGraphic>();
@@ -114,7 +114,7 @@ public class Env {
 	/**
 	 * Sauvegarde le dessin actuel dans un fichier
 	 * @param f le fichier
-	 * @return true si sauvegardé avec succès, false sinon
+	 * @return true si sauvegarde avec succes, false sinon
 	 */
 	public boolean saveToFile(File f) {
 		try {
@@ -131,8 +131,8 @@ public class Env {
 	
 	/**
 	 * Ouvrir un dessin depuis un fichier
-	 * @param f le fichier à ouvrir
-	 * @return true si ouvert avec succès, false si l'ouverture du dessin a échoué (fichier incompatible, erreur de fichier)
+	 * @param f le fichier a ouvrir
+	 * @return true si ouvert avec succes, false si l'ouverture du dessin a echoue (fichier incompatible, erreur de fichier)
 	 */
 	public boolean openFromFile(File f) {
 		try {
@@ -154,7 +154,7 @@ public class Env {
 	}
 	
 	/**
-	 * Réinitialise le dessin (supprime toutes les figures)
+	 * Reinitialise le dessin (supprime toutes les figures)
 	 */
 	public void empty() {
 		data = new Data();
@@ -164,7 +164,7 @@ public class Env {
 	 * compare deux listes
 	 * @param f
 	 * @param g
-	 * @return true si les deux listes sont égales
+	 * @return true si les deux listes sont egales
 	 */
 	public boolean listsAreSame(List<FigureGraphic> f, List<FigureGraphic> g) {
 		return f.size() == g.size() && f.containsAll(g);
@@ -172,7 +172,7 @@ public class Env {
 	
 	private List<FigureGraphic> lastSelection = new ArrayList<FigureGraphic>();
 	/**
-	 * Fonction appelé quand la sélection a changé
+	 * Fonction appele quand la selection a change
 	 */
 	public void onSelectionChanged() {
 		List<FigureGraphic> s = new ArrayList<FigureGraphic>( getSelected() );
@@ -186,7 +186,7 @@ public class Env {
 	// Selection
 
 	/**
-	 * Annule la sélection actuelle
+	 * Annule la selection actuelle
 	 */
 	private void emptySelection() {
 		for(FigureGraphic f : getFigures())
@@ -194,7 +194,7 @@ public class Env {
 	}
 	
 	/**
-	 * Déselectionne toutes les figures
+	 * DÔøΩselectionne toutes les figures
 	 */
 	public void unselectAll() {
 		emptySelection();
@@ -202,9 +202,9 @@ public class Env {
 	}
 	
 	/**
-	 * Recherche la première figure qui contient le point p
+	 * Recherche la premiere figure qui contient le point p
 	 * @param p
-	 * @return la première figure trouvée sous le point p , null si aucune figure trouvée
+	 * @return la premiere figure trouvee sous le point p , null si aucune figure trouvee
 	 */
 	public FigureGraphic getOneByPosition(Point_2D p) {
 		for(FigureGraphic f : getFigures())
@@ -219,8 +219,8 @@ public class Env {
 	}
 	
 	/**
-	 * Récupère les figures sélectionnées
-	 * @return une liste de toutes les figures sélectionnées
+	 * Recupere les figures selectionnees
+	 * @return une liste de toutes les figures selectionnees
 	 */
 	public List<FigureGraphic> getSelected() {
 		List<FigureGraphic> figures = new ArrayList<FigureGraphic>();
@@ -231,8 +231,8 @@ public class Env {
 	}
 	
 	/**
-	 * Sélectionne une et une seule figure
-	 * @param figure : la figure à sélectionner
+	 * Selectionne une et une seule figure
+	 * @param figure : la figure a selectionner
 	 */
 	public void selectFigure(FigureGraphic figure) {
 		emptySelection();
@@ -242,9 +242,9 @@ public class Env {
 	}
 	
 	/**
-	 * Selectionne la première figure qui contient p
+	 * Selectionne la premiere figure qui contient p
 	 * @param p : le point
-	 * @return la figure sélectionné ou null
+	 * @return la figure selectionne ou null
 	 */
 	public FigureGraphic selectOneByPosition(Point_2D p) {
 		emptySelection();
@@ -258,8 +258,8 @@ public class Env {
 	}
 	
 	/**
-	 * Sélectionne un ensemble de figures grâce à une sélection.
-	 * Le centre des figures est déterminant pour savoir si elles appartiennent à cette sélection.
+	 * Selectionne un ensemble de figures grace a une selection.
+	 * Le centre des figures est determinant pour savoir si elles appartiennent a cette selection.
 	 * @param selection
 	 */
 	public void selectPoints(Selection selection) {
@@ -270,7 +270,7 @@ public class Env {
 	}
 	
 	/**
-	 * Sélectionne toutes les figures.
+	 * Selectionne toutes les figures.
 	 */
 	public void selectAll() {
 		for(FigureGraphic f : getFigures())
@@ -279,16 +279,16 @@ public class Env {
 	}
 	
 	/**
-	 * @return le nombre de figures sélectionnées
+	 * @return le nombre de figures selectionnees
 	 */
 	public int countSelected() {
 		return getSelected().size();
 	}
 	
 	/**
-	 * Déplace toutes les figures sélectionnées
-	 * @param dx : déplacement en x
-	 * @param dy : déplacement en y
+	 * Deplace toutes les figures selectionnees
+	 * @param dx : deplacement en x
+	 * @param dy : deplacement en y
 	 */
 	public void moveSelected(int dx, int dy) {
 		for(FigureGraphic f : getSelected())
@@ -305,7 +305,7 @@ public class Env {
 	}
 	
 	/**
-	 * Supprime les figures selectionnées du dessin
+	 * Supprime les figures selectionnees du dessin
 	 */
 	public void removeSelected() {
 		List<FigureGraphic> figures = getFigures();

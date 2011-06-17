@@ -3,15 +3,15 @@ package ui;
 import figure.*;
 
 /**
- * Représente le mode de dessin actuel
+ * Represente le mode de dessin actuel
  */
 public enum Mode {
 	/**
-	 * mode Déplacement
+	 * mode Deplacement
 	 */
 	MOVE, 
 	/**
-	 * mode Sélection
+	 * mode Selection
 	 */
 	SELECT, 
 	/**

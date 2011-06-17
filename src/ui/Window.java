@@ -6,7 +6,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 /**
- * La fenêtre de l'application
+ * La fenetre de l'application
  */
 @SuppressWarnings("serial")
 public class Window extends JFrame {
@@ -75,19 +75,19 @@ public class Window extends JFrame {
 	}
 	
 	/**
-	 * Pose une question à l'utilisateur de type Oui/Non à travers une popup 
+	 * Pose une question a l'utilisateur de type Oui/Non a travers une popup 
 	 * @param message : la question
 	 * @param title : un titre
-	 * @return la réponse booléenne
+	 * @return la reponse booleenne
 	 */
 	public boolean confirm(String message, String title) {
 		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	}
 	
 	/**
-	 * Pose une question à l'utilisateur de type Oui/Non à travers une popup 
+	 * Pose une question a l'utilisateur de type Oui/Non a travers une popup 
 	 * @param message : la question
-	 * @return la réponse booléenne
+	 * @return la reponse booleenne
 	 */
 	public boolean confirm(String message) {
 		return confirm(message, null);

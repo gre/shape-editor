@@ -10,7 +10,7 @@ import ui.Mode;
 import figure.*;
 
 /**
- * Ecoute les événements de la souris sur la zone de dessin
+ * Ecoute les evenements de la souris sur la zone de dessin
  */
 public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	
@@ -43,7 +43,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 	}
 	
 	/**
-	 * Fonction appelée quand le mode a changé
+	 * Fonction appelee quand le mode a change
 	 * @param mode
 	 */
 	public void onToolChanged(Mode mode) {

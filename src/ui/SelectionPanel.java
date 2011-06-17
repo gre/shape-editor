@@ -20,8 +20,8 @@ import javax.swing.*;
 import figure.FigureGraphic;
 
 /**
- * Panneau de type accordéon qui affichent les détails sur les figures actuellement sélectionnées 
- * avec la possibilité d'éditer ces figures.
+ * Panneau de type accordeon qui affichent les details sur les figures actuellement selectionnees 
+ * avec la possibilite d'editer ces figures.
  */
 @SuppressWarnings("serial")
 public class SelectionPanel extends JScrollPane {
@@ -39,7 +39,7 @@ public class SelectionPanel extends JScrollPane {
 	}
 	
 	/**
-	 * Fonction appelée quand la sélection a changé
+	 * Fonction appelee quand la selection a change
 	 */
 	public void onSelectionChanged() {
 		panel.setVisible(false);
@@ -51,7 +51,7 @@ public class SelectionPanel extends JScrollPane {
 		constraints.gridy = 0;
 		constraints.weightx = 1;
 		constraints.weighty = 1;
-		JLabel title = new JLabel("Figure(s) sélectionnée(s)");
+		JLabel title = new JLabel("Figure(s) selectionnee(s)");
 		Font font = title.getFont();
 		title.setFont(font.deriveFont(font.getStyle() ^ Font.BOLD));
 		panel.add(title, constraints);

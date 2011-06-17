@@ -8,7 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 /**
- * Représente une zone de sélection rectangulaire sur le canvas.
+ * Represente une zone de selection rectangulaire sur le canvas.
  */
 public class Selection
 {
@@ -32,7 +32,7 @@ public class Selection
 	}
 	
 	/**
-	 * Dessine la sélection
+	 * Dessine la selection
 	 * @param g
 	 */
 	public void draw(Graphics g) {
