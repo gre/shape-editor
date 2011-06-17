@@ -5,6 +5,9 @@ import java.io.Serializable;
 import ui.Env;
 
 @SuppressWarnings("serial")
+/**
+ * Abstract class for figures that propose functions for UI interaction
+ */
 public abstract class FigureGraphic implements Figure, Serializable
 {
     protected Color colorStroke, colorBackground;

@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
+/**
+ *  Class for the triangle figure
+ */
 public class Triangle extends Polygon implements Serializable
 {
     private static long nbOfTriangles = 0;

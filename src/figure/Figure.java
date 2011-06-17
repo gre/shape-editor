@@ -6,7 +6,8 @@ import java.awt.Graphics;
 
 /**
 * An interface implemented by other figures.
-* By implementing this iterface figures can be used for various operations like drawing, drag&drop, selecting, etc.
+* By implementing this interface figures can be used for various 
+* operations like drawing, drag&drop, selecting, etc.
 */
 public interface Figure
 {

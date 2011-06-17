@@ -12,6 +12,9 @@ import java.util.List;
 import ui.Env;
 
 @SuppressWarnings("serial")
+/**
+ * Class for polygon figure
+ */
 public class Polygon extends FigureGraphic implements Serializable
 {
 	// Taille de la poignee de terminaison

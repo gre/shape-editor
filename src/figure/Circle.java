@@ -10,6 +10,9 @@ import java.io.Serializable;
 import ui.Env;
 
 @SuppressWarnings("serial")
+/**
+ * Class for circle figure
+ */
 public class Circle extends FigureGraphic implements Serializable
 {
 	private static long nbOfCircles = 0;

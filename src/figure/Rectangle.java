@@ -10,6 +10,9 @@ import java.io.Serializable;
 import ui.Env;
 
 @SuppressWarnings("serial")
+/**
+ * Class for rectangle figure
+ */
 public class Rectangle extends FigureGraphic implements Serializable
 {
 	private static long nbOfRectangles = 0;
