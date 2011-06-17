@@ -13,7 +13,8 @@ import java.awt.Graphics2D;
 public class Selection
 {
 	final static float dash1[] = {4.0f};
-	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 4.0f, dash1, 0.0f);
+	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, 
+										BasicStroke.JOIN_MITER, 4.0f, dash1, 0.0f);
 	
 	protected Color bg, stroke;
 	protected Point_2D topleft;
@@ -28,7 +29,8 @@ public class Selection
 	}
 	
 	public Selection(Color colorStroke, Color colorBackground, Point_2D a, Point_2D b) {
-		this(colorStroke, colorBackground, Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.abs(a.getX()-b.getX()), Math.abs(a.getY()-b.getY()));
+		this(colorStroke, colorBackground, Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), 
+										   Math.abs(a.getX()-b.getX()), Math.abs(a.getY()-b.getY()));
 	}
 	
 	/**

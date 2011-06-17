@@ -156,7 +156,8 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener {
 		if(mode!=Mode.SELECT) canvas.setSelection(null);
 		switch(mode) {
 		case SELECT:
-			Selection s = new Selection(new Color(120,120,120,150), new Color(120,120,120,50), new Point_2D(e.getX(), e.getY()), lastPosition);
+			Selection s = new Selection(new Color(120,120,120,150), new Color(120,120,120,50), 
+										new Point_2D(e.getX(), e.getY()), lastPosition);
 			env.selectPoints(s);
 			canvas.setSelection(s);
 			break;

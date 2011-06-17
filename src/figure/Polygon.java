@@ -129,9 +129,11 @@ public class Polygon extends FigureGraphic implements Serializable
 					g.setColor(new Color(255, 100, 100));
 				else
 					g.setColor(Color.white);
-				g.fillOval(first.x-FINISH_HANDLE_RADIUS_PX/2, first.y-FINISH_HANDLE_RADIUS_PX/2, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+				g.fillOval(first.x-FINISH_HANDLE_RADIUS_PX/2, first.y-FINISH_HANDLE_RADIUS_PX/2, 
+						FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
 				g.setColor(new Color(0, 0, 0));
-				g.drawOval(first.x-FINISH_HANDLE_RADIUS_PX/2, first.y-FINISH_HANDLE_RADIUS_PX/2, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+				g.drawOval(first.x-FINISH_HANDLE_RADIUS_PX/2, first.y-FINISH_HANDLE_RADIUS_PX/2, 
+						FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
 			}
 			
 		}

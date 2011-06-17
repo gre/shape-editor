@@ -41,7 +41,8 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
 <span class="Type">public</span> <span class="Type">class</span> Selection
 {
     <span class="Type">final</span> <span class="Type">static</span> <span class="Type">float</span> dash1[] = {<span class="Constant">4.0f</span>};
-    <span class="Type">final</span> <span class="Type">static</span> BasicStroke dashed = <span class="Statement">new</span> BasicStroke(<span class="Constant">1.0f</span>, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, <span class="Constant">4.0f</span>, dash1, <span class="Constant">0.0f</span>);
+    <span class="Type">final</span> <span class="Type">static</span> BasicStroke dashed = <span class="Statement">new</span> BasicStroke(<span class="Constant">1.0f</span>, BasicStroke.CAP_BUTT,
+                                        BasicStroke.JOIN_MITER, <span class="Constant">4.0f</span>, dash1, <span class="Constant">0.0f</span>);
 
     <span class="Type">protected</span> Color bg, stroke;
     <span class="Type">protected</span> Point_2D topleft;
@@ -56,7 +57,8 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
     }
 
     <span class="Type">public</span> Selection(Color colorStroke, Color colorBackground, Point_2D a, Point_2D b) {
-        <span class="Type">this</span>(colorStroke, colorBackground, Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.abs(a.getX()-b.getX()), Math.abs(a.getY()-b.getY()));
+        <span class="Type">this</span>(colorStroke, colorBackground, Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()),
+                                           Math.abs(a.getX()-b.getX()), Math.abs(a.getY()-b.getY()));
     }
 
     <span class="Comment">/**</span>
@@ -412,7 +414,8 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
         <span class="Statement">if</span>(mode!=Mode.SELECT) canvas.setSelection(<span class="Constant">null</span>);
         <span class="Statement">switch</span>(mode) {
         <span class="Statement">case</span> SELECT:
-            Selection s = <span class="Statement">new</span> Selection(<span class="Statement">new</span> Color(<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">150</span>), <span class="Statement">new</span> Color(<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">50</span>), <span class="Statement">new</span> Point_2D(e.getX(), e.getY()), lastPosition);
+            Selection s = <span class="Statement">new</span> Selection(<span class="Statement">new</span> Color(<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">150</span>), <span class="Statement">new</span> Color(<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">120</span>,<span class="Constant">50</span>),
+                                        <span class="Statement">new</span> Point_2D(e.getX(), e.getY()), lastPosition);
             env.selectPoints(s);
             canvas.setSelection(s);
             <span class="Statement">break</span>;
@@ -564,7 +567,8 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
 <span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> la reponse booleenne</span>
 <span class="Comment">     */</span>
     <span class="Type">public</span> <span class="Type">boolean</span> confirm(String message, String title) {
-        <span class="Statement">return</span> JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(<span class="Type">this</span>, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        <span class="Statement">return</span> JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(<span class="Type">this</span>, message, title,
+                                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     }
 
     <span class="Comment">/**</span>
@@ -892,7 +896,8 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
     }
 
     <span class="Comment">/**</span>
-<span class="Comment">     *</span><span class="Special"> Trie les figures de telle sorte que les figures selectionnees apparaissent en premier.</span><span class="Comment"> Outre la selection, l'ordre est conserve.</span>
+<span class="Comment">     *</span><span class="Special"> Trie les figures de telle sorte que les figures selectionnees apparaissent en premier.</span><span class="Comment"> </span>
+<span class="Comment">     * Outre la selection, l'ordre est conserve.</span>
 <span class="Comment">     */</span>
     <span class="Type">public</span> <span class="Type">void</span> sortFigures() {
         List&lt;FigureGraphic&gt; newfigures = <span class="Statement">new</span> ArrayList&lt;FigureGraphic&gt;();
@@ -926,7 +931,8 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
     <span class="Comment">/**</span>
 <span class="Comment">     *</span><span class="Special"> Ouvrir un dessin depuis un fichier</span>
 <span class="Comment">     </span><span class="Comment">* </span><span class="Special">@param</span><span class="Identifier"> f</span><span class="Comment"> le fichier a ouvrir</span>
-<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> true si ouvert avec succes, false si l'ouverture du dessin a echoue (fichier incompatible, erreur de fichier)</span>
+<span class="Comment">     * </span><span class="Special">@return</span><span class="Comment"> true si ouvert avec succes, false si l'ouverture du dessin a echoue </span>
+<span class="Comment">     *                                      (fichier incompatible, erreur de fichier)</span>
 <span class="Comment">     */</span>
     <span class="Type">public</span> <span class="Type">boolean</span> openFromFile(File f) {
         <span class="Statement">try</span> {
@@ -1874,9 +1880,11 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
                     g.setColor(<span class="Statement">new</span> Color(<span class="Constant">255</span>, <span class="Constant">100</span>, <span class="Constant">100</span>));
                 <span class="Statement">else</span>
                     g.setColor(Color.white);
-                g.fillOval(first.x-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, first.y-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+                g.fillOval(first.x-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, first.y-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>,
+                        FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
                 g.setColor(<span class="Statement">new</span> Color(<span class="Constant">0</span>, <span class="Constant">0</span>, <span class="Constant">0</span>));
-                g.drawOval(first.x-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, first.y-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
+                g.drawOval(first.x-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>, first.y-FINISH_HANDLE_RADIUS_PX/<span class="Constant">2</span>,
+                        FINISH_HANDLE_RADIUS_PX, FINISH_HANDLE_RADIUS_PX);
             }
 
         }

@@ -81,7 +81,8 @@ public class Window extends JFrame {
 	 * @return la reponse booleenne
 	 */
 	public boolean confirm(String message, String title) {
-		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, message, title, 
+										JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 	}
 	
 	/**

@@ -98,7 +98,8 @@ public class Env {
 	}
 	
 	/**
-	 * Trie les figures de telle sorte que les figures selectionnees apparaissent en premier. Outre la selection, l'ordre est conserve.
+	 * Trie les figures de telle sorte que les figures selectionnees apparaissent en premier. 
+	 * Outre la selection, l'ordre est conserve.
 	 */
 	public void sortFigures() {
 		List<FigureGraphic> newfigures = new ArrayList<FigureGraphic>();
@@ -132,7 +133,8 @@ public class Env {
 	/**
 	 * Ouvrir un dessin depuis un fichier
 	 * @param f le fichier a ouvrir
-	 * @return true si ouvert avec succes, false si l'ouverture du dessin a echoue (fichier incompatible, erreur de fichier)
+	 * @return true si ouvert avec succes, false si l'ouverture du dessin a echoue 
+	 * 										(fichier incompatible, erreur de fichier)
 	 */
 	public boolean openFromFile(File f) {
 		try {
